@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16.13-alpine3.23
+    container_name: postgres_main
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: usersdb
+    volumes:
+      - ./postgres_main:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+
+  db_test :
+    image: postgres:16.13-alpine3.23
+    container_name: postgres_test
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: usersdb_test
+    volumes:
+      - ./postgres_test:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+

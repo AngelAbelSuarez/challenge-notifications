@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  api:
+    command: >
+      sh -c "
+        echo 'Esperando 20 segundos...' &&
+        sleep 20 &&
+        echo 'PostgreSQL debería estar listo, ejecutando pruebas...' &&
+        npm run test:cov
+      "
+    depends_on:
+      - db
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    environment:
+      - POSTGRES_DB_HOST=db
+      - POSTGRES_DB_PORT=5432
+      - POSTGRES_DB_USER=postgres
+      - POSTGRES_DB_PASSWORD=postgres
+      - POSTGRES_DB_NAME=usersdb_test
+      - POSTGRES_DB_SYNC=true
+      - DRAGONBALL_API_URL='https://dragonball-api.com/api/characters'
+    restart: "no"
+
+  db:
+    image: postgres:16.13-alpine3.23
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: usersdb_test
+    volumes:
+      - ./postgres_test_data:/var/lib/postgresql/data 
+    restart: "no"
+
+volumes:
+  postgres_test_data:

@@ -1,0 +1,46 @@
+# version: 2.1
+# orbs:
+#   node: circleci/node@5.0.2
+
+# jobs:
+#   build_and_test: # this can be any name you choose
+#     docker:
+#       - image: cimg/node:22.14.0
+#         environment:
+#           POSTGRES_DB_HOST: 0.0.0.0
+#           POSTGRES_DB_PORT: 5432
+#           POSTGRES_DB_USER: postgres
+#           POSTGRES_DB_PASSWORD: postgres
+#           POSTGRES_DB_DATABASE: usersdb_test
+#           POSTGRES_DB_SYNC: false
+#           COVERALLS_REPO_TOKEN: 
+#       # Service container image
+#       - image: cimg/postgres:16.11
+#         environment:
+#           POSTGRES_USER: postgres
+#           POSTGRES_PASSWORD: postgres
+#           POSTGRES_DB: usersdb_test
+#     executor: node/default # use the default executor defined within the orb
+#     steps:
+#       - checkout
+#       - run:
+#           name: Install dependencies
+#           command: npm install
+#       - run:
+#           name: Run Database Migrations
+#           command: npm run migration:run      
+#       - run:
+#           name: Upload coverage to Coveralls
+#           command: npm run test:cov:ci  
+#       - run:
+#           name: Build app
+#           command: npm run build
+#       - persist_to_workspace:
+#           root: ~/project
+#           paths: .
+
+# workflows:
+#   build_test_deploy: # this can be any name you choose
+#     jobs:
+#       - build_and_test
+

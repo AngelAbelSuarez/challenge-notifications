@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  api:
+    command: >
+      sh -c "
+        echo 'Esperando 20 segundos...' &&
+        sleep 20 &&
+        echo 'PostgreSQL debería estar listo, iniciando migraciones y la aplicación...' &&
+        npm run migration:run &&
+        npm run start:prod         
+      "
+    depends_on:
+      - db
+    ports:
+      - 3000:3000
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - POSTGRES_DB_HOST=db
+      - POSTGRES_DB_PORT=5432
+      - POSTGRES_DB_USER=postgres
+      - POSTGRES_DB_PASSWORD=postgres
+      - POSTGRES_DB_NAME=usersdb
+      - POSTGRES_DB_SYNC=false
+      - DRAGONBALL_API_URL='https://dragonball-api.com/api/characters'
+    restart: unless-stopped
+
+  db:
+    image: postgres:16.13-alpine3.23
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: usersdb
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
