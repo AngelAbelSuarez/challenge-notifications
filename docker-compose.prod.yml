@@ -22,7 +22,7 @@ services:
       - POSTGRES_DB_PORT=5432
       - POSTGRES_DB_USER=postgres
       - POSTGRES_DB_PASSWORD=postgres
-      - POSTGRES_DB_NAME=usersdb
+      - POSTGRES_DB_NAME=notifications
       - POSTGRES_DB_SYNC=false
       - DRAGONBALL_API_URL='https://dragonball-api.com/api/characters'
     restart: unless-stopped
@@ -34,7 +34,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: usersdb
+      POSTGRES_DB: notifications
     volumes:
       - ./postgres_data:/var/lib/postgresql/data
     restart: unless-stopped

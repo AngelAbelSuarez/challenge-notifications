@@ -8,11 +8,11 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: usersdb
+      POSTGRES_DB: notifications
     volumes:
       - ./postgres_main:/var/lib/postgresql/data
     ports:
-      - "5433:5432"
+      - "5432:5432"
 
   db_test :
     image: postgres:16.13-alpine3.23
@@ -21,9 +21,9 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: usersdb_test
+      POSTGRES_DB: notifications_test
     volumes:
       - ./postgres_test:/var/lib/postgresql/data
     ports:
-      - "5434:5432"
+      - "5433:5432"
 
