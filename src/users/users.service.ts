@@ -23,38 +23,15 @@ export class UsersService {
       id: user.id,
       name: user.name,
       email: user.email,
-      dragonBallZIds: user.dragonBallZIds || [],
+      password: user.password,
+      createdDate: user.createdDate,
+      updatedDate: user.updatedDate,
+      deletedAt: user.deletedAt,
     };
   }
 
   async findAll(): Promise<RespondUserDto[]> {
     return await this.usersRepository.findAll();
-  }
-
-  async findByIdwIThDragonBallZ(
-    id: string,
-  ): Promise<RespondUserDragonBallZDto | undefined> {
-    const user = await this.usersRepository.findById(id);
-    if (!user) {
-      throw new NotFoundException(`User with id ${id} not found`);
-    }
-
-    let dragonBallZCharacters;
-
-    if (user.dragonBallZIds && user.dragonBallZIds.length > 0) {
-      dragonBallZCharacters = await this.usersRepository.findCharacters(
-        user.dragonBallZIds,
-      );
-    }
-
-    const userWithCharacters = {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      dragonBallZCharacters: dragonBallZCharacters || [],
-    };
-
-    return userWithCharacters;
   }
 
   async findById(id: string): Promise<RespondUserDto | undefined> {

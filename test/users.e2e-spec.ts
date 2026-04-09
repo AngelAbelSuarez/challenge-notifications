@@ -10,7 +10,13 @@ import { User } from '../src/users/entities/user.entity';
 import request from 'supertest';
 import { idUserNotFound, userData, userData2 } from './mocks/users.mock';
 import { RespondUserDto } from '../src/users/dto';
-import axios from 'axios';
+// import axios from 'axios';
+
+interface ErrorResponse {
+  message: string | string[];
+  error: string;
+  statusCode: number;
+}
 
 describe('UsersController (e2e)', () => {
   let testContext: TestAppContext;
@@ -78,8 +84,13 @@ describe('UsersController (e2e)', () => {
         .post('/users')
         .send({})
         .expect(400);
+      interface ErrorResponse {
+        message: string | string[];
+        error: string;
+        statusCode: number;
+      }
 
-      const body = response.body as any;
+      const body = response.body as ErrorResponse;
       expect(body.message).toContain('name must be a string');
       expect(body.message).toContain('name should not be empty');
       expect(body.message).toContain('email must be an email');
@@ -102,7 +113,7 @@ describe('UsersController (e2e)', () => {
         .send(userData)
         .expect(409);
 
-      const body = response.body as any;
+      const body = response.body as ErrorResponse;
       expect(body.message).toBe('Email already exists');
       expect(body.error).toBe('Conflict');
       expect(body.statusCode).toBe(409);
@@ -139,17 +150,16 @@ describe('UsersController (e2e)', () => {
         .post('/users')
         .send(userData2)
         .expect(201);
-
+      const userId = (createdUser.body as { id: string }).id;
       const response = await request(app.getHttpServer())
-        .get(`/users/${createdUser.body.id}`)
+        .get(`/users/${userId}`)
         .expect(200);
 
-      const body = response.body as RespondUserDragonBallZDto;
+      const body = response.body as RespondUserDto;
       expect(body).toBeDefined();
       expect(body).toHaveProperty('id');
       expect(body).toHaveProperty('name');
       expect(body).toHaveProperty('email');
-      expect(body).toHaveProperty('dragonBallZCharacters');
       expect(body.name).toBe('newuser2');
       expect(body.email).toBe('new2@example.com');
     });
@@ -160,9 +170,9 @@ describe('UsersController (e2e)', () => {
           .post('/users')
           .send(userData2)
           .expect(201);
-
+        const userId = (createdUser.body as { id: string }).id;
         const response = await request(app.getHttpServer())
-          .patch(`/users/${createdUser.body.id}`)
+          .patch(`/users/${userId}`)
           .send(userData2)
           .expect(200);
 
@@ -179,7 +189,7 @@ describe('UsersController (e2e)', () => {
           .send(userData2)
           .expect(404);
 
-        const body = response.body as any;
+        const body = response.body as ErrorResponse;
         expect(body.message).toBe(`User with id ${idUserNotFound} not found`);
         expect(body.error).toBe('Not Found');
         expect(body.statusCode).toBe(404);
@@ -191,17 +201,17 @@ describe('UsersController (e2e)', () => {
           .send(userData)
           .expect(201);
 
-        const createdUser2 = await request(app.getHttpServer())
+        await request(app.getHttpServer())
           .post('/users')
           .send(userData2)
           .expect(201);
-
+        const userId = (createdUser.body as { id: string }).id;
         const response = await request(app.getHttpServer())
-          .patch(`/users/${createdUser.body.id}`)
+          .patch(`/users/${userId}`)
           .send({ ...userData, email: userData2.email })
           .expect(409);
 
-        const body = response.body as any;
+        const body = response.body as ErrorResponse;
         expect(body.message).toBe('Email already exists');
         expect(body.error).toBe('Conflict');
         expect(body.statusCode).toBe(409);
@@ -214,13 +224,11 @@ describe('UsersController (e2e)', () => {
           .post('/users')
           .send(userData)
           .expect(201);
-
+        const userId = (createdUser.body as { id: string }).id;
         const response = await request(app.getHttpServer())
-          .delete(`/users/${createdUser.body.id}`)
+          .delete(`/users/${userId}`)
           .expect(200);
-        console.log(createdUser.body.id);
-        console.log(response.body);
-        const body = response.body as any;
+        const body = response.body as boolean;
         expect(body).toBeDefined();
         expect(body).toBe(true);
       });
@@ -230,7 +238,7 @@ describe('UsersController (e2e)', () => {
           .delete(`/users/${idUserNotFound}`)
           .expect(404);
 
-        const body = response.body as any;
+        const body = response.body as ErrorResponse;
         expect(body.message).toBe(`User with id ${idUserNotFound} not found`);
         expect(body.error).toBe('Not Found');
         expect(body.statusCode).toBe(404);

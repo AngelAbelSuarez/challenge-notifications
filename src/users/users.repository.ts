@@ -1,10 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { User } from '@/users/entities/user.entity';
 import { CreateUserDto, UpdateUserDto, RespondUserDto } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ClientsDragonBallZ } from '@/ClientsDragonBallZ/clients.service';
-import { CharacterDto } from 'src/ClientsDragonBallZ/dto/character.dto';
 import { DeleteResult } from 'typeorm';
 
 @Injectable()
@@ -12,7 +10,6 @@ export class UsersRepository {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    private clientsDragonBallZ: ClientsDragonBallZ,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
@@ -27,11 +24,6 @@ export class UsersRepository {
   async findAll(): Promise<RespondUserDto[]> {
     const users = await this.userRepository.find();
     return users;
-  }
-
-  async findCharacters(ids: number[]): Promise<CharacterDto[]> {
-    const characters = await this.clientsDragonBallZ.getCharacterByIds(ids);
-    return characters;
   }
 
   async findById(id: string): Promise<RespondUserDto | null> {

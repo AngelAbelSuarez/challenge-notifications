@@ -72,10 +72,7 @@ export class UsersController {
     },
   })
   async create(@Body() createUserDto: CreateUserDto): Promise<RespondUserDto> {
-    const userData = {
-      ...createUserDto,
-    };
-    return this.usersService.create(userData);
+    return this.usersService.create(createUserDto);
   }
 
   @Get()
@@ -105,7 +102,7 @@ export class UsersController {
   @ApiResponse({
     status: 200,
     description: 'Return the user.',
-    type: RespondUserDragonBallZDto,
+    type: [RespondUserDto],
   })
   @ApiResponse({
     status: 404,
@@ -118,10 +115,8 @@ export class UsersController {
       },
     },
   })
-  async findById(
-    @Param('id') id: string,
-  ): Promise<RespondUserDragonBallZDto | undefined> {
-    return this.usersService.findByIdwIThDragonBallZ(id);
+  async findById(@Param('id') id: string): Promise<RespondUserDto | undefined> {
+    return this.usersService.findById(id);
   }
 
   @Patch(':id')

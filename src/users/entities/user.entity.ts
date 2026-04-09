@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export class User {
@@ -37,11 +44,36 @@ export class User {
   })
   password: string;
 
+  @ApiProperty({
+    example: new Date(),
+    description: 'The date when the user was created',
+  })
+  @CreateDateColumn()
+  createdDate: Date;
+
+  @ApiProperty({
+    example: new Date(),
+    description: 'The date when the user was updated',
+  })
+  @UpdateDateColumn()
+  updatedDate: Date;
+
+  @ApiProperty({
+    example: new Date(),
+    description: 'The date when the user was deleted',
+  })
+  @DeleteDateColumn()
+  deletedAt?: Date | null;
+
   constructor(user?: User) {
     if (user) {
       this.id = user.id;
       this.name = user.name;
       this.email = user.email;
+      this.password = user.password;
+      this.createdDate = user.createdDate;
+      this.updatedDate = user.updatedDate;
+      this.deletedAt = user.deletedAt;
     }
   }
 }
