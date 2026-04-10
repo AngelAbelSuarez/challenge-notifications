@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class User {
+export class Users {
   @ApiProperty({ example: 1, description: 'The unique identifier of the user' })
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -65,7 +65,7 @@ export class User {
   @DeleteDateColumn()
   deletedAt?: Date | null;
 
-  constructor(user?: User) {
+  constructor(user?: Users) {
     if (user) {
       this.id = user.id;
       this.name = user.name;

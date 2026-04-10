@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { User } from '../entities/user.entity';
+import { Users } from '../entities/user.entity';
 
 export class RespondUserDto {
   @ApiProperty({
@@ -41,7 +41,7 @@ export class RespondUserDto {
   })
   deletedAt?: Date | null;
 
-  constructor(user: User) {
+  constructor(user: Users) {
     this.id = user.id;
     this.name = user.name;
     this.email = user.email;

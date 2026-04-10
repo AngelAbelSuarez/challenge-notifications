@@ -6,7 +6,7 @@ import {
 } from './helpers/test-app.helper';
 import { INestApplication } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { User } from '../src/users/entities/user.entity';
+import { Users } from '../src/users/entities/user.entity';
 import request from 'supertest';
 import { idUserNotFound, userData, userData2 } from './mocks/users.mock';
 import { RespondUserDto } from '../src/users/dto';
@@ -21,7 +21,7 @@ interface ErrorResponse {
 describe('UsersController (e2e)', () => {
   let testContext: TestAppContext;
   let app: INestApplication;
-  let usersRepository: Repository<User>;
+  let usersRepository: Repository<Users>;
   // let axiosGetService: jest.SpyInstance;
 
   beforeAll(async () => {
