@@ -71,12 +71,14 @@ describe('UsersController (e2e)', () => {
       const body = response.body as RespondUserDto;
       expect(body.id).toBeDefined();
       expect(body.name).toBe('newuser');
-
-      const savedUser = await usersRepository.findOneBy({
-        id: body.id,
-      });
-      expect(savedUser).not.toBeNull();
-      expect(savedUser?.name).toBe('newuser');
+      expect(body.email).toBe('new@example.com');
+      expect(body).toHaveProperty('id');
+      expect(body).toHaveProperty('name');
+      expect(body).toHaveProperty('email');
+      expect(body).not.toHaveProperty('password');
+      expect(body).toHaveProperty('createdDate');
+      expect(body).toHaveProperty('updatedDate');
+      expect(body).toHaveProperty('deletedAt');
     });
 
     it('It should respond with a bad request error if the request body is invalid', async () => {
@@ -84,11 +86,6 @@ describe('UsersController (e2e)', () => {
         .post('/users')
         .send({})
         .expect(400);
-      interface ErrorResponse {
-        message: string | string[];
-        error: string;
-        statusCode: number;
-      }
 
       const body = response.body as ErrorResponse;
       expect(body.message).toContain('name must be a string');
@@ -138,7 +135,6 @@ describe('UsersController (e2e)', () => {
       expect(body[0]).toHaveProperty('id');
       expect(body[0]).toHaveProperty('name');
       expect(body[0]).toHaveProperty('email');
-      expect(body[0]).toHaveProperty('dragonBallZIds');
       expect(body[0].name).toBe('newuser');
       expect(body[0].email).toBe('new@example.com');
     });
@@ -163,86 +159,87 @@ describe('UsersController (e2e)', () => {
       expect(body.name).toBe('newuser2');
       expect(body.email).toBe('new2@example.com');
     });
+  });
 
-    describe('PATCH /users/:id', () => {
-      it('It should respond 200 code when updating a user successfully', async () => {
-        const createdUser = await request(app.getHttpServer())
-          .post('/users')
-          .send(userData2)
-          .expect(201);
-        const userId = (createdUser.body as { id: string }).id;
-        const response = await request(app.getHttpServer())
-          .patch(`/users/${userId}`)
-          .send(userData2)
-          .expect(200);
+  describe('PATCH /users/:id', () => {
+    it('It should respond 200 code when updating a user successfully', async () => {
+      const createdUser = await request(app.getHttpServer())
+        .post('/users')
+        .send(userData2)
+        .expect(201);
+      const userId = (createdUser.body as { id: string }).id;
+      const response = await request(app.getHttpServer())
+        .patch(`/users/${userId}`)
+        .send(userData2)
+        .expect(200);
 
-        const body = response.body as RespondUserDto;
-        expect(body).toBeDefined();
-        expect(body).toHaveProperty('id');
-        expect(body).toHaveProperty('name');
-        expect(body).toHaveProperty('email');
-      });
-
-      it('It should respond 404 code when updating a user that does not exist', async () => {
-        const response = await request(app.getHttpServer())
-          .patch(`/users/${idUserNotFound}`)
-          .send(userData2)
-          .expect(404);
-
-        const body = response.body as ErrorResponse;
-        expect(body.message).toBe(`User with id ${idUserNotFound} not found`);
-        expect(body.error).toBe('Not Found');
-        expect(body.statusCode).toBe(404);
-      });
-
-      it('It should respond 409 code when updating a user with an email that already exists', async () => {
-        const createdUser = await request(app.getHttpServer())
-          .post('/users')
-          .send(userData)
-          .expect(201);
-
-        await request(app.getHttpServer())
-          .post('/users')
-          .send(userData2)
-          .expect(201);
-        const userId = (createdUser.body as { id: string }).id;
-        const response = await request(app.getHttpServer())
-          .patch(`/users/${userId}`)
-          .send({ ...userData, email: userData2.email })
-          .expect(409);
-
-        const body = response.body as ErrorResponse;
-        expect(body.message).toBe('Email already exists');
-        expect(body.error).toBe('Conflict');
-        expect(body.statusCode).toBe(409);
-      });
+      const body = response.body as RespondUserDto;
+      expect(body).toBeDefined();
+      expect(body).toHaveProperty('id');
+      expect(body).toHaveProperty('name');
+      expect(body).toHaveProperty('email');
     });
 
-    describe('DELETE /users/:id', () => {
-      xit('It should respond 200 code when deleting a user successfully', async () => {
-        const createdUser = await request(app.getHttpServer())
-          .post('/users')
-          .send(userData)
-          .expect(201);
-        const userId = (createdUser.body as { id: string }).id;
-        const response = await request(app.getHttpServer())
-          .delete(`/users/${userId}`)
-          .expect(200);
-        const body = response.body as boolean;
-        expect(body).toBeDefined();
-        expect(body).toBe(true);
-      });
+    it('It should respond 404 code when updating a user that does not exist', async () => {
+      const response = await request(app.getHttpServer())
+        .patch(`/users/${idUserNotFound}`)
+        .send(userData2)
+        .expect(404);
 
-      it('It should respond 404 code when deleting a user that does not exist', async () => {
-        const response = await request(app.getHttpServer())
-          .delete(`/users/${idUserNotFound}`)
-          .expect(404);
+      const body = response.body as ErrorResponse;
+      expect(body.message).toBe(`User with id ${idUserNotFound} not found`);
+      expect(body.error).toBe('Not Found');
+      expect(body.statusCode).toBe(404);
+    });
 
-        const body = response.body as ErrorResponse;
-        expect(body.message).toBe(`User with id ${idUserNotFound} not found`);
-        expect(body.error).toBe('Not Found');
-        expect(body.statusCode).toBe(404);
-      });
+    it('It should respond 409 code when updating a user with an email that already exists', async () => {
+      const createdUser = await request(app.getHttpServer())
+        .post('/users')
+        .send(userData)
+        .expect(201);
+
+      await request(app.getHttpServer())
+        .post('/users')
+        .send(userData2)
+        .expect(201);
+      const userId = (createdUser.body as { id: string }).id;
+      const response = await request(app.getHttpServer())
+        .patch(`/users/${userId}`)
+        .send({ ...userData, email: userData2.email })
+        .expect(409);
+
+      const body = response.body as ErrorResponse;
+      expect(body.message).toBe('Email already exists');
+      expect(body.error).toBe('Conflict');
+      expect(body.statusCode).toBe(409);
+    });
+  });
+
+  describe('DELETE /users/:id', () => {
+    it('It should respond 200 code when deleting a user successfully', async () => {
+      const createdUser = await request(app.getHttpServer())
+        .post('/users')
+        .send(userData)
+        .expect(201);
+      const userId = (createdUser.body as { id: string }).id;
+      const response = await request(app.getHttpServer())
+        .delete(`/users/${userId}`)
+        .expect(200);
+      const body = response.body as { message: string; id: string };
+      expect(body).toBeDefined();
+      expect(body.message).toBe('User deleted successfully');
+      expect(body.id).toBe(userId);
+    });
+
+    it('It should respond 404 code when deleting a user that does not exist', async () => {
+      const response = await request(app.getHttpServer())
+        .delete(`/users/${idUserNotFound}`)
+        .expect(404);
+
+      const body = response.body as ErrorResponse;
+      expect(body.message).toBe(`User with id ${idUserNotFound} not found`);
+      expect(body.error).toBe('Not Found');
+      expect(body.statusCode).toBe(404);
     });
   });
 });

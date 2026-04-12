@@ -23,7 +23,6 @@ export class UsersService {
       id: user.id,
       name: user.name,
       email: user.email,
-      password: user.password,
       createdDate: user.createdDate,
       updatedDate: user.updatedDate,
       deletedAt: user.deletedAt,
@@ -64,7 +63,7 @@ export class UsersService {
     return userUpdated;
   }
 
-  async delete(id: string): Promise<boolean> {
+  async delete(id: string): Promise<{ message: string; id: string }> {
     const user = await this.usersRepository.findById(id);
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
@@ -75,6 +74,9 @@ export class UsersService {
       throw new NotFoundException(`User with id ${id} not found`);
     }
 
-    return true;
+    return {
+      message: 'User deleted successfully',
+      id,
+    };
   }
 }

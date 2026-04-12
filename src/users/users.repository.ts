@@ -3,7 +3,7 @@ import { Users } from '@/users/entities/user.entity';
 import { CreateUserDto, UpdateUserDto, RespondUserDto } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { DeleteResult } from 'typeorm';
+import { UpdateResult } from 'typeorm';
 
 @Injectable()
 export class UsersRepository {
@@ -43,7 +43,7 @@ export class UsersRepository {
     return this.userRepository.find({ where: criteria });
   }
 
-  async delete(id: string): Promise<DeleteResult> {
-    return await this.userRepository.delete(id);
+  async delete(id: string): Promise<UpdateResult> {
+    return await this.userRepository.softDelete(id);
   }
 }

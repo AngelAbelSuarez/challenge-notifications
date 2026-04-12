@@ -169,7 +169,16 @@ export class UsersController {
   @Delete(':id')
   @ApiOperation({ summary: 'Delete user' })
   @ApiParam({ name: 'id', description: 'User id' })
-  @ApiResponse({ status: 200, description: 'OK', type: Boolean })
+  @ApiResponse({
+    status: 200,
+    description: 'User successfully deleted',
+    schema: {
+      example: {
+        message: 'User deleted successfully',
+        id: '17a6b856-03d8-44a5-a87f-cf76fcc67f45',
+      },
+    },
+  })
   @ApiResponse({
     status: 404,
     description: 'User not found.',
@@ -191,7 +200,9 @@ export class UsersController {
       },
     },
   })
-  async remove(@Param('id') id: string): Promise<boolean> {
+  async remove(
+    @Param('id') id: string,
+  ): Promise<{ message: string; id: string }> {
     return this.usersService.delete(id);
   }
 }

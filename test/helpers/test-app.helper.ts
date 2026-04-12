@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
-import { User } from '../../src/users/entities/user.entity';
+import { Users } from '../../src/users/entities/user.entity';
 import { AppModule } from '../../src/app.module';
 
 export interface TestAppContext {
   app: INestApplication;
   dataSource: DataSource;
-  usersRepository: Repository<User>;
+  usersRepository: Repository<Users>;
 }
 
 /**
@@ -38,7 +38,7 @@ export async function initTestApp(): Promise<TestAppContext> {
   // Initialize the app
   await app.init();
   // Get repository
-  const usersRepository = dataSource.getRepository(User);
+  const usersRepository = dataSource.getRepository(Users);
 
   return {
     app,

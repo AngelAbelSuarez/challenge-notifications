@@ -73,7 +73,7 @@ export class Users {
       this.password = user.password;
       this.createdDate = user.createdDate;
       this.updatedDate = user.updatedDate;
-      this.deletedAt = user.deletedAt;
+      this.deletedAt = user.deletedAt || null;
     }
   }
 }
