@@ -4,6 +4,10 @@
 
 ## Badges
 
+[![CircleCI](https://dl.circleci.com/status-badge/img/circleci/8Vocs9Wi1dzq3hdj7Xm8N6/QYYM67YbhV513WFpr7MqSY/tree/circleci-project-setup.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/circleci/8Vocs9Wi1dzq3hdj7Xm8N6/QYYM67YbhV513WFpr7MqSY/tree/circleci-project-setup)
+
+[![Coverage Status](https://coveralls.io/repos/github/AngelAbelSuarez/challenge-notifications/badge.svg?branch=circleci-project-setup)](https://coveralls.io/github/AngelAbelSuarez/challenge-notifications?branch=circleci-project-setup)
+
 ## Features
 
 ## Pre-Requisites
@@ -14,7 +18,7 @@
 
 ## How to run the APP
 
-```bash
+<!-- ```bash
 # permissions
 $ chmode 711 ./up_dev.sh
 
@@ -30,7 +34,7 @@ $ chmode 711 ./up_test.sh
 
 # start test
 $ ./up_test.sh
-```
+``` -->
 
 
 ## Areas to imporve 
