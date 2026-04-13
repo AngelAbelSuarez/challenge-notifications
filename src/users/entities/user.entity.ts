@@ -44,6 +44,13 @@ export class Users {
   })
   password: string;
 
+  @Column({
+    type: 'varchar',
+    nullable: false,
+    default: 'USER',
+  })
+  role: string;
+
   @ApiProperty({
     example: new Date(),
     description: 'The date when the user was created',
