@@ -5,22 +5,26 @@ export class CreateTableUsers1775710600750 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`
+            CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+        `);
+
+        await queryRunner.query(`
             CREATE TABLE "users" (
-            "id" uuid NOT NULL DEFAULT uuid_generate_v4(), 
-            "name" character varying(100) NOT NULL, 
-            "email" character varying NOT NULL, 
-            "password" character varying(100) NOT NULL, 
-            "createdDate" TIMESTAMP NOT NULL DEFAULT now(), 
-            "updatedDate" TIMESTAMP NOT NULL DEFAULT now(), 
-            "deletedAt" TIMESTAMP, 
-            CONSTRAINT "UQ_97672ac88f789774dd47f7c8be3" 
-            UNIQUE ("email"), 
-            CONSTRAINT "PK_a3ffb1c0c8416b9fc6f907b7433" 
-            PRIMARY KEY ("id"))`);
+                "id" uuid NOT NULL DEFAULT uuid_generate_v4(), 
+                "name" character varying(100) NOT NULL, 
+                "email" character varying(150) NOT NULL, 
+                "password" character varying(100) NOT NULL, 
+                "createdDate" TIMESTAMP NOT NULL DEFAULT now(), 
+                "updatedDate" TIMESTAMP NOT NULL DEFAULT now(), 
+                "deletedAt" TIMESTAMP, 
+
+                CONSTRAINT "PK_users_id" PRIMARY KEY ("id"),
+                CONSTRAINT "UQ_users_email" UNIQUE ("email")
+            )
+        `);
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`DROP TABLE "users"`);
     }
-
 }
