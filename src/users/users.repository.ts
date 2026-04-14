@@ -46,4 +46,9 @@ export class UsersRepository {
   async delete(id: string): Promise<UpdateResult> {
     return await this.userRepository.softDelete(id);
   }
+
+  async findByPassword(email: string): Promise<string | undefined> {
+    const user = await this.userRepository.findOneBy({ email });
+    return user?.password;
+  }
 }

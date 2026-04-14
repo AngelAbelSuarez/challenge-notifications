@@ -5,13 +5,11 @@ import {
 } from '@nestjs/common';
 import { UsersRepository } from './users.repository';
 import { CreateUserDto, UpdateUserDto, RespondUserDto } from './dto';
-import * as bcryptjs from "bcryptjs";
+import * as bcryptjs from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    private usersRepository: UsersRepository,
-  ) { }
+  constructor(private usersRepository: UsersRepository) {}
 
   async create(createUserDto: CreateUserDto): Promise<RespondUserDto> {
     const email = await this.usersRepository.findByEmail(createUserDto.email);
@@ -22,13 +20,16 @@ export class UsersService {
 
     const hashedPassword = await bcryptjs.hash(createUserDto.password, 10);
 
-    const user = await this.usersRepository.create({ ...createUserDto, password: hashedPassword });
+    const user = await this.usersRepository.create({
+      ...createUserDto,
+      password: hashedPassword,
+    });
 
     return {
       id: user.id,
       name: user.name,
       email: user.email,
-      password: user.password,
+      role: user.role,
       createdDate: user.createdDate,
       updatedDate: user.updatedDate,
       deletedAt: user.deletedAt,
@@ -89,5 +90,10 @@ export class UsersService {
   async findByEmail(email: string): Promise<RespondUserDto | undefined> {
     const user = await this.usersRepository.findByEmail(email);
     return user || undefined;
+  }
+
+  async findUserPassword(email: string): Promise<string | undefined> {
+    const password = await this.usersRepository.findByPassword(email);
+    return password || undefined;
   }
 }

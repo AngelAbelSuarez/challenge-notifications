@@ -1,3 +1,4 @@
+import { Role } from '@/common/enum/role.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   Column,
@@ -39,16 +40,17 @@ export class Users {
   })
   @Column({
     type: 'varchar',
-    length: 100,
+    length: 8,
     nullable: false,
+    select: false,
   })
   password: string;
 
-  @Column({
-    type: 'varchar',
-    nullable: false,
-    default: 'USER',
+  @ApiProperty({
+    example: 'user',
+    description: 'The role of the user',
   })
+  @Column({ type: 'enum', default: Role.USER, enum: Role })
   role: string;
 
   @ApiProperty({
@@ -77,7 +79,7 @@ export class Users {
       this.id = user.id;
       this.name = user.name;
       this.email = user.email;
-      this.password = user.password;
+      this.role = user.role;
       this.createdDate = user.createdDate;
       this.updatedDate = user.updatedDate;
       this.deletedAt = user.deletedAt || null;

@@ -1,38 +1,52 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { RegisterAuthDto, LoginAuthDto } from './dto/index';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { RegisterAuthDto, LoginAuthDto, RespondAuthDto } from './dto/index';
 import { UsersService } from '@/users/users.service';
 import { JwtService } from '@nestjs/jwt';
-import * as bcryptjs from "bcryptjs";
+import * as bcryptjs from 'bcryptjs';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
-    private readonly jwtService: JwtService
-  ) { }
+    private readonly jwtService: JwtService,
+  ) {}
   async register(registerAuthDto: RegisterAuthDto) {
     return this.usersService.create(registerAuthDto);
   }
 
   async login(loginAuthDto: LoginAuthDto) {
-
     const user = await this.usersService.findByEmail(loginAuthDto.email);
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const isPasswordValid = await bcryptjs.compare(loginAuthDto.password, user.password);
+    const password = await this.usersService.findUserPassword(
+      loginAuthDto.email,
+    );
+
+    if (!password) {
+      throw new NotFoundException('Invalid credentials');
+    }
+
+    const isPasswordValid = await bcryptjs.compare(
+      loginAuthDto.password,
+      password,
+    );
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const payload = { id: user.id, email: user.email };
+    const payload = { id: user.id, role: user.role };
     const token = this.jwtService.sign(payload);
 
-    return {
+    return new RespondAuthDto({
       token,
+      id: user.id,
       email: user.email,
-    };
-
+    });
   }
 }

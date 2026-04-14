@@ -1,13 +1,27 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { RegisterAuthDto, LoginAuthDto } from './dto/index';
-import { ApiBadRequestResponse, ApiBody, ApiConflictResponse, ApiInternalServerErrorResponse, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { RegisterAuthDto, LoginAuthDto, RespondAuthDto } from './dto/index';
+import {
+  ApiBadRequestResponse,
+  ApiBody,
+  ApiConflictResponse,
+  ApiInternalServerErrorResponse,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { RespondUserDto } from '@/users/dto';
-
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService) {}
 
   @Post('register')
   @ApiOperation({ summary: 'Register user' })
@@ -55,7 +69,9 @@ export class AuthController {
       },
     },
   })
-  async register(@Body() registerAuthDto: RegisterAuthDto) {
+  async register(
+    @Body() registerAuthDto: RegisterAuthDto,
+  ): Promise<RespondUserDto> {
     return this.authService.register(registerAuthDto);
   }
 
@@ -65,7 +81,7 @@ export class AuthController {
   @ApiResponse({
     status: 200,
     description: 'The user has been successfully logged in.',
-    type: RespondUserDto,
+    type: RespondAuthDto,
   })
   @ApiBadRequestResponse({
     description: 'Bad request',
@@ -83,7 +99,6 @@ export class AuthController {
       },
     },
   })
-
   @ApiInternalServerErrorResponse({
     description: 'Internal server error',
     schema: {
@@ -94,7 +109,7 @@ export class AuthController {
       },
     },
   })
-  async login(@Body() loginAuthDto: LoginAuthDto) {
+  async login(@Body() loginAuthDto: LoginAuthDto): Promise<RespondAuthDto> {
     return this.authService.login(loginAuthDto);
   }
 }

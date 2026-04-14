@@ -31,4 +31,3 @@ export class CreateUserDto {
   @Transform(({ value }) => value.trim())
   password: string;
 }
-
