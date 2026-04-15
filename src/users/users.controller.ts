@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -115,7 +116,9 @@ export class UsersController {
       },
     },
   })
-  async findById(@Param('id') id: string): Promise<RespondUserDto | undefined> {
+  async findById(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<RespondUserDto | undefined> {
     return this.usersService.findById(id);
   }
 
@@ -160,7 +163,7 @@ export class UsersController {
     },
   })
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<RespondUserDto> {
     return this.usersService.update(id, updateUserDto);
@@ -201,7 +204,7 @@ export class UsersController {
     },
   })
   async remove(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
   ): Promise<{ message: string; id: string }> {
     return this.usersService.delete(id);
   }

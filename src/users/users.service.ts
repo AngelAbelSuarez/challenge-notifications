@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { UsersRepository } from './users.repository';
 import { CreateUserDto, UpdateUserDto, RespondUserDto } from './dto';
+import * as bcryptjs from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
@@ -17,12 +18,18 @@ export class UsersService {
       throw new ConflictException('Email already exists');
     }
 
-    const user = await this.usersRepository.create(createUserDto);
+    const hashedPassword = await bcryptjs.hash(createUserDto.password, 10);
+
+    const user = await this.usersRepository.create({
+      ...createUserDto,
+      password: hashedPassword,
+    });
 
     return {
       id: user.id,
       name: user.name,
       email: user.email,
+      role: user.role,
       createdDate: user.createdDate,
       updatedDate: user.updatedDate,
       deletedAt: user.deletedAt,
@@ -78,5 +85,15 @@ export class UsersService {
       message: 'User deleted successfully',
       id,
     };
+  }
+
+  async findByEmail(email: string): Promise<RespondUserDto | undefined> {
+    const user = await this.usersRepository.findByEmail(email);
+    return user || undefined;
+  }
+
+  async findUserPassword(email: string): Promise<string | undefined> {
+    const password = await this.usersRepository.findByPassword(email);
+    return password || undefined;
   }
 }

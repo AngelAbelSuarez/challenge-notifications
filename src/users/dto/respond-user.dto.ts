@@ -18,6 +18,12 @@ export class RespondUserDto {
   email: string;
 
   @ApiProperty({
+    example: 'user',
+    description: 'The role of the user',
+  })
+  role: string;
+
+  @ApiProperty({
     example: new Date(),
     description: 'The date when the user was created',
   })
@@ -39,6 +45,7 @@ export class RespondUserDto {
     this.id = user.id;
     this.name = user.name;
     this.email = user.email;
+    this.role = user.role;
     this.createdDate = user.createdDate;
     this.updatedDate = user.updatedDate;
     this.deletedAt = user.deletedAt;
