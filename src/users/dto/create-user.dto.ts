@@ -27,7 +27,7 @@ export class CreateUserDto {
   })
   @IsNotEmpty()
   @IsString()
-  @MinLength(8)
+  @MinLength(12)
   @Transform(({ value }) => value.trim())
   password: string;
 }

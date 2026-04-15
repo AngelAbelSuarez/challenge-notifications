@@ -1,4 +1,4 @@
-import { Role } from '@/common/enum/role.enum';
+import { Role } from '../../common/enum/role.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   Column,
@@ -40,7 +40,7 @@ export class Users {
   })
   @Column({
     type: 'varchar',
-    length: 8,
+    length: 100,
     nullable: false,
     select: false,
   })
