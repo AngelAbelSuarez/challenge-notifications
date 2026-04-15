@@ -29,36 +29,15 @@ describe('UsersController (e2e)', () => {
     testContext = await initTestApp();
     app = testContext.app;
     usersRepository = testContext.usersRepository;
-
-    // axiosGetService = jest.spyOn(axios, 'get');
-    // axiosGetService.mockImplementation((url: string) => {
-    //   if (url.includes('dragonball-api.com')) {
-    //     const id = getDragonBallZIdFromUrl(url);
-    //     if (id !== null) {
-    //       const data = mockDragonBallZData.find(
-    //         (dragonBall) => dragonBall.id === id,
-    //       );
-    //       return Promise.resolve({ data: data });
-    //     }
-    //   }
-    //   return Promise.reject(new Error(`No mock configured for URL: ${url}`));
-    // });
   });
 
   afterAll(async () => {
-    // if (axiosGetService) {
-    //   axiosGetService.mockClear();
-    // }
-    // Limpiar después de todos los tests
     await closeTestApp(testContext);
   });
 
   beforeEach(async () => {
     //Restaurar spy después de cada test
     await resetTestApp(testContext);
-    // if (axiosGetService) {
-    //   axiosGetService.mockClear();
-    // }
   });
 
   describe('POST /users', () => {
@@ -96,6 +75,111 @@ describe('UsersController (e2e)', () => {
       expect(body.message).toContain('password must be a string');
       expect(body.message).toContain('password should not be empty');
       expect(body.error).toBe('Bad Request');
+      expect(body.statusCode).toBe(400);
+    });
+
+    it('It should return 400 if name is missing', async () => {
+      const response = await request(app.getHttpServer())
+        .post('/users')
+        .send({ ...userData, name: null })
+        .expect(400);
+
+      const body = response.body as ErrorResponse;
+      expect(body.message).toContain('name must be a string');
+      expect(body.message).toContain('name should not be empty');
+      expect(body.error).toBe('Bad Request');
+      expect(body.statusCode).toBe(400);
+    });
+
+    it('It should return 400 if name is an empty string', async () => {
+      const response = await request(app.getHttpServer())
+        .post('/users')
+        .send({ ...userData, name: '' })
+        .expect(400);
+
+      const body = response.body as ErrorResponse;
+      expect(body.message).toContain(
+        'name must be longer than or equal to 3 characters',
+      );
+      expect(body.message).toContain('name should not be empty');
+      expect(body.statusCode).toBe(400);
+    });
+
+    it('It should return 400 if email is missing', async () => {
+      const response = await request(app.getHttpServer())
+        .post('/users')
+        .send({ ...userData, email: null })
+        .expect(400);
+
+      const body = response.body as ErrorResponse;
+      expect(body.message).toContain('email must be an email');
+      expect(body.message).toContain('email must be a string');
+      expect(body.message).toContain('email should not be empty');
+      expect(body.statusCode).toBe(400);
+    });
+
+    it('It should return 400 if email is an empty string', async () => {
+      const response = await request(app.getHttpServer())
+        .post('/users')
+        .send({ ...userData, email: '' })
+        .expect(400);
+
+      const body = response.body as ErrorResponse;
+      expect(body.message).toContain('email must be an email');
+      expect(body.message).toContain('email should not be empty');
+      expect(body.statusCode).toBe(400);
+    });
+
+    it('It should return 400 if email has invalid format', async () => {
+      const response = await request(app.getHttpServer())
+        .post('/users')
+        .send({ ...userData, email: 'invalid-email' })
+        .expect(400);
+
+      const body = response.body as ErrorResponse;
+      expect(body.message).toContain('email must be an email');
+      expect(body.statusCode).toBe(400);
+    });
+
+    it('It should return 400 if password is missing', async () => {
+      const response = await request(app.getHttpServer())
+        .post('/users')
+        .send({ ...userData, password: undefined })
+        .expect(400);
+
+      const body = response.body as ErrorResponse;
+      expect(body.message).toContain('password should not be empty');
+      expect(body.message).toContain(
+        'password must be longer than or equal to 12 characters',
+      );
+      expect(body.statusCode).toBe(400);
+    });
+
+    it('It should return 400 if password is an empty string', async () => {
+      const response = await request(app.getHttpServer())
+        .post('/users')
+        .send({ ...userData, password: '' })
+        .expect(400);
+
+      const body = response.body as ErrorResponse;
+      expect(body.message).toContain(
+        'password must be longer than or equal to 12 characters',
+      );
+      expect(body.message).toContain('password should not be empty');
+      expect(body.statusCode).toBe(400);
+    });
+
+    it('It should return 400 if password has less than 12 characters', async () => {
+      const response = await request(app.getHttpServer())
+        .post('/users')
+        .send({ ...userData, password: 'short' })
+        .expect(400);
+
+      const body = response.body as ErrorResponse;
+
+      expect(body.message).toContain(
+        'password must be longer than or equal to 12 characters',
+      );
       expect(body.statusCode).toBe(400);
     });
 
@@ -138,6 +222,17 @@ describe('UsersController (e2e)', () => {
       expect(body[0].name).toBe('newuser');
       expect(body[0].email).toBe('new@example.com');
     });
+
+    it('It should respond staus 200 when listing users is empty', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/users')
+        .expect(200);
+      console.log(response.body);
+      const body = response.body as RespondUserDto[];
+      expect(body).toBeDefined();
+      expect(body).toBeInstanceOf(Array);
+      expect(body).toEqual([]);
+    });
   });
 
   describe('GET /users/:id', () => {
@@ -159,6 +254,28 @@ describe('UsersController (e2e)', () => {
       expect(body.name).toBe('newuser2');
       expect(body.email).toBe('new2@example.com');
     });
+
+    it('It should respond 400 code when getting a user with invalid id format', async () => {
+      const response = await request(app.getHttpServer())
+        .get(`/users/invalid-id`)
+        .expect(400);
+
+      const body = response.body as ErrorResponse;
+      expect(body.statusCode).toBe(400);
+      expect(body.error).toBe('Bad Request');
+      expect(body.message).toContain('Validation failed');
+    });
+
+    it('It should respond 404 code when getting a user that does not exist', async () => {
+      const response = await request(app.getHttpServer())
+        .get(`/users/${idUserNotFound}`)
+        .expect(404);
+
+      const body = response.body as ErrorResponse;
+      expect(body.message).toBe(`User with id ${idUserNotFound} not found`);
+      expect(body.error).toBe('Not Found');
+      expect(body.statusCode).toBe(404);
+    });
   });
 
   describe('PATCH /users/:id', () => {
@@ -178,6 +295,35 @@ describe('UsersController (e2e)', () => {
       expect(body).toHaveProperty('id');
       expect(body).toHaveProperty('name');
       expect(body).toHaveProperty('email');
+    });
+
+    it('It should respond 400 code when updating a user with invalid id format', async () => {
+      const response = await request(app.getHttpServer())
+        .patch(`/users/invalid-id`)
+        .send(userData2)
+        .expect(400);
+
+      const body = response.body as ErrorResponse;
+      expect(body.statusCode).toBe(400);
+      expect(body.error).toBe('Bad Request');
+      expect(body.message).toContain('Validation failed');
+    });
+
+    it('It should respond 400 code when updating a user with invalid body', async () => {
+      const createdUser = await request(app.getHttpServer())
+        .post('/users')
+        .send(userData2)
+        .expect(201);
+      const userId = (createdUser.body as { id: string }).id;
+      const response = await request(app.getHttpServer())
+        .patch(`/users/${userId}`)
+        .send({ email: 'not-an-email' })
+        .expect(400);
+
+      const body = response.body as ErrorResponse;
+      expect(body.message).toContain('email must be an email');
+      expect(body.error).toBe('Bad Request');
+      expect(body.statusCode).toBe(400);
     });
 
     it('It should respond 404 code when updating a user that does not exist', async () => {
@@ -229,6 +375,17 @@ describe('UsersController (e2e)', () => {
       expect(body).toBeDefined();
       expect(body.message).toBe('User deleted successfully');
       expect(body.id).toBe(userId);
+    });
+
+    it('It should respond 400 code when deleting a user with invalid id format', async () => {
+      const response = await request(app.getHttpServer())
+        .delete(`/users/invalid-id`)
+        .expect(400);
+
+      const body = response.body as ErrorResponse;
+      expect(body.statusCode).toBe(400);
+      expect(body.error).toBe('Bad Request');
+      expect(body.message).toContain('Validation failed');
     });
 
     it('It should respond 404 code when deleting a user that does not exist', async () => {
