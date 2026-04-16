@@ -227,7 +227,6 @@ describe('UsersController (e2e)', () => {
       const response = await request(app.getHttpServer())
         .get('/users')
         .expect(200);
-      console.log(response.body);
       const body = response.body as RespondUserDto[];
       expect(body).toBeDefined();
       expect(body).toBeInstanceOf(Array);
