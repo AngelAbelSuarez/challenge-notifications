@@ -17,12 +17,22 @@ import {
   ApiConflictResponse,
   ApiInternalServerErrorResponse,
   ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiUnauthorizedResponse,
+  ApiForbiddenResponse,
 } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto, UpdateUserDto, RespondUserDto } from './dto';
+import { Auth } from '@/auth/decorators/auth.decorator';
+import { Role } from '@/common/enum/role.enum';
 
-@ApiTags('users')
+@ApiTags('Users')
+@ApiBearerAuth()
+@ApiUnauthorizedResponse({
+  description: 'Unauthorized Bearer Auth',
+})
 @Controller('users')
+@Auth([Role.ADMIN])
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -49,6 +59,26 @@ export class UsersController {
         ],
         error: 'Bad Request',
         statusCode: 400,
+      },
+    },
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized Bearer Auth',
+    schema: {
+      example: {
+        message: 'Token not found',
+        error: 'Unauthorized',
+        statusCode: 401,
+      },
+    },
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+    schema: {
+      example: {
+        message: 'Forbidden resource',
+        error: 'Forbidden',
+        statusCode: 403,
       },
     },
   })
@@ -83,6 +113,26 @@ export class UsersController {
     description: 'Return all users.',
     type: [RespondUserDto],
   })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized Bearer Auth',
+    schema: {
+      example: {
+        message: 'Token not found',
+        error: 'Unauthorized',
+        statusCode: 401,
+      },
+    },
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+    schema: {
+      example: {
+        message: 'Forbidden resource',
+        error: 'Forbidden',
+        statusCode: 403,
+      },
+    },
+  })
   @ApiInternalServerErrorResponse({
     description: 'Internal server error',
     schema: {
@@ -96,7 +146,6 @@ export class UsersController {
   async findAll(): Promise<RespondUserDto[]> {
     return this.usersService.findAll();
   }
-
   @Get(':id')
   @ApiOperation({ summary: 'Get user by id' })
   @ApiParam({ name: 'id', description: 'User id' })
@@ -104,6 +153,26 @@ export class UsersController {
     status: 200,
     description: 'Return the user.',
     type: [RespondUserDto],
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized Bearer Auth',
+    schema: {
+      example: {
+        message: 'Token not found',
+        error: 'Unauthorized',
+        statusCode: 401,
+      },
+    },
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+    schema: {
+      example: {
+        message: 'Forbidden resource',
+        error: 'Forbidden',
+        statusCode: 403,
+      },
+    },
   })
   @ApiResponse({
     status: 404,
@@ -130,6 +199,26 @@ export class UsersController {
     status: 200,
     description: 'The user has been successfully updated.',
     type: RespondUserDto,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized Bearer Auth',
+    schema: {
+      example: {
+        message: 'Token not found',
+        error: 'Unauthorized',
+        statusCode: 401,
+      },
+    },
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+    schema: {
+      example: {
+        message: 'Forbidden resource',
+        error: 'Forbidden',
+        statusCode: 403,
+      },
+    },
   })
   @ApiResponse({
     status: 404,
@@ -179,6 +268,26 @@ export class UsersController {
       example: {
         message: 'User deleted successfully',
         id: '17a6b856-03d8-44a5-a87f-cf76fcc67f45',
+      },
+    },
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized Bearer Auth',
+    schema: {
+      example: {
+        message: 'Token not found',
+        error: 'Unauthorized',
+        statusCode: 401,
+      },
+    },
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+    schema: {
+      example: {
+        message: 'Forbidden resource',
+        error: 'Forbidden',
+        statusCode: 403,
       },
     },
   })

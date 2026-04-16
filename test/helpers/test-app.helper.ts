@@ -3,6 +3,7 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { Users } from '../../src/users/entities/user.entity';
 import { AppModule } from '../../src/app.module';
+import { AuthService } from '@/auth/auth.service';
 
 export interface TestAppContext {
   app: INestApplication;
