@@ -13,7 +13,8 @@
   "moduleNameMapper": {
     "^@/(.*)$": "<rootDir>/src/$1"
   },
-  "coverageReporters": ["lcov", "text"]
+  "coverageReporters": ["lcov", "text"],
+  "verbose": true
 }
 
 

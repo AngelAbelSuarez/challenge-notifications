@@ -19,5 +19,3 @@ export class LoginAuthDto {
   @Transform(({ value }) => value.trim())
   password: string;
 }
-
-

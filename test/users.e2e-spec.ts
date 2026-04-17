@@ -33,8 +33,6 @@ describe('UsersController (e2e)', () => {
   let app: INestApplication;
   let usersRepository: Repository<Users>;
 
-  // let axiosGetService: jest.SpyInstance;
-
   beforeAll(async () => {
     // Inicializar la aplicación de prueba
     testContext = await initTestApp();
@@ -81,9 +79,6 @@ describe('UsersController (e2e)', () => {
       expect(body.id).toBeDefined();
       expect(body.name).toBe('newuser');
       expect(body.email).toBe('new@example.com');
-      expect(body).toHaveProperty('id');
-      expect(body).toHaveProperty('name');
-      expect(body).toHaveProperty('email');
       expect(body).not.toHaveProperty('password');
       expect(body).toHaveProperty('createdDate');
       expect(body).toHaveProperty('updatedDate');
