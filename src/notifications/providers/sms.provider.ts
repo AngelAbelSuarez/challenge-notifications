@@ -1,49 +1,46 @@
 import { Injectable } from "@nestjs/common";
 import { NotificationProvider, SendResult } from "../interfaces/notification-provider.interface";
 import { ChannelType } from "../enums/channel-type.enum";
-import { isEmail } from "class-validator";
+import { isPhoneNumber } from "class-validator";
 
 
 @Injectable()
-export class EmailProvider implements NotificationProvider {
+export class SmsProvider implements NotificationProvider {
 
-    public readonly channel: ChannelType.EMAIL;
+    public readonly channel: ChannelType.SMS;
+    private readonly MAX_SMS_LENGTH = 160;
 
     validateRecipient(recipient: string): boolean {
-        return isEmail(recipient);
+        return isPhoneNumber(recipient);
     }
 
     formatContent(content: string): string {
-        return `
-            <html>
-                <body>
-                    <h2>Notificación</h2>
-                    <p>${content}</p>
-                </body>
-            </html>
-        `;
+        if (content.length > this.MAX_SMS_LENGTH) {
+            return content.substring(0, this.MAX_SMS_LENGTH ) + '...';
+        }
+        return content;
     }
 
     async send(recipient: string, content: string): Promise<SendResult> {
         if (!this.validateRecipient(recipient)) {
             return {
                 success: false,
-                message: 'Invalid email format'
+                message: 'Invalid phone number format'
             }
         }
 
         const formattedContent = this.formatContent(content);
 
-        console.log(`[EMAIL] Sending to: ${recipient}`);
-        console.log(`[EMAIL] Template generated`);
-        console.log(`[EMAIL] Sending...`);
+        console.log(`[SMS] Sending to: ${recipient}`);
+        console.log(`[SMS] Content length: ${formattedContent.length} characters`);
+        console.log(`[SMS] Sending...`);
 
         return {
             success: true,
-            message: 'Email sent successfully',
+            message: 'SMS sent successfully',
             metadata: {
                 recipient,
-                template: formattedContent,
+                templat: formattedContent,
                 sentAt: new Date()
             }             
         }
