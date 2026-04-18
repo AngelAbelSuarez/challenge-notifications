@@ -5,13 +5,15 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Notifications } from '@/notifications/entities/notification.entity';
 
 @Entity()
 export class Users {
-  @ApiProperty({ example: 1, description: 'The unique identifier of the user' })
+  @ApiProperty({ example: 'bc43c059-d497-4296-8310-cff0483d38ba', description: 'The unique identifier of the user' })
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -52,6 +54,9 @@ export class Users {
   })
   @Column({ type: 'enum', default: Role.USER, enum: Role })
   role: string;
+
+  @OneToMany(() => Notifications, (notification) => notification.userId)
+  notifications: Notifications[];
 
   @ApiProperty({
     example: new Date(),
