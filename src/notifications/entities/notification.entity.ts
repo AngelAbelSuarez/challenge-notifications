@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { ChannelType } from "../enums/channel-type.enum";
-// import { Users } from "@/users/entities/user.entity";
+import { Users } from "../../users/entities/user.entity";
 import { NotificationStatus } from "../enums/notification-status.enum";
 
 @Entity()
@@ -70,9 +70,9 @@ export class Notifications {
     recipient: string;
 
 
-    // @ManyToOne(() => Users, (user) => user.notifications)
-    // @JoinColumn({ name: 'userId' })
-    // user: Users;
+    @ManyToOne(() => Users, (user) => user.notifications)
+    @JoinColumn({ name: 'userId' })
+    user: Users;
 
     @ApiProperty({
         example: '5a262baf-2596-43bd-b943-2ef2b922f0e4',
