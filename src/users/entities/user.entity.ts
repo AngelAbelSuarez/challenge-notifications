@@ -13,7 +13,10 @@ import { Notifications } from '../../notifications/entities/notification.entity'
 
 @Entity()
 export class Users {
-  @ApiProperty({ example: 'bc43c059-d497-4296-8310-cff0483d38ba', description: 'The unique identifier of the user' })
+  @ApiProperty({
+    example: 'bc43c059-d497-4296-8310-cff0483d38ba',
+    description: 'The unique identifier of the user',
+  })
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

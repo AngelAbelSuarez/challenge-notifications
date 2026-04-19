@@ -55,7 +55,7 @@ export async function closeTestApp(context: TestAppContext): Promise<void> {
   const { app, dataSource, usersRepository } = context;
 
   // Clean up test data
-  await usersRepository.clear();
+  // await usersRepository.clear();
 
   // Close connections
   await dataSource.destroy();
@@ -69,7 +69,7 @@ export async function resetTestApp(context: TestAppContext): Promise<void> {
   const { dataSource, usersRepository } = context;
 
   // Clear all data
-  await usersRepository.clear();
+  // await usersRepository.clear();
 
   // Reset the database schema
   await dataSource.synchronize(true);
