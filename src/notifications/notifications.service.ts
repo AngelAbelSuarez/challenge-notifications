@@ -1,11 +1,48 @@
 import { Injectable } from '@nestjs/common';
+import { NotificationsRepository } from './notifications.repository';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
+import { NotificationProviderFactory } from './providers/provider.factory';
+import { NotificationStatus } from './enums/notification-status.enum';
+import { Notifications } from './entities/notification.entity';
 
 @Injectable()
 export class NotificationsService {
-  create(createNotificationDto: CreateNotificationDto) {
-    return 'This action adds a new notification';
+  constructor(
+    private readonly notificationRepository: NotificationsRepository,
+    private readonly notificationProviderFactory: NotificationProviderFactory,
+  ) {}
+
+  async create(createNotificationDto: CreateNotificationDto, userId: string) {
+    let notification: Notifications | undefined;
+    try {
+      notification = await this.notificationRepository.create(
+        createNotificationDto,
+        userId,
+      );
+
+      const provider = await this.notificationProviderFactory.getProvider(
+        createNotificationDto.channel,
+      );
+
+      const providerSend = await provider.send(
+        createNotificationDto.recipient,
+        createNotificationDto.content,
+      );
+
+      await this.notificationRepository.update(notification.id, {
+        status: NotificationStatus.SENT,
+      });
+
+      return providerSend;
+    } catch (error) {
+      if (notification?.id) {
+        await this.notificationRepository.update(notification.id, {
+          status: NotificationStatus.FAILED,
+        });
+      }
+      throw new Error(`Error al enviar la notificación: ${error.message}`);
+    }
   }
 
   findAll() {

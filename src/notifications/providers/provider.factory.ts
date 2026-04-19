@@ -6,12 +6,11 @@ import { EmailProvider } from './email.provider';
 import { SmsProvider } from './sms.provider';
 import { PushProvider } from './push.provider';
 
-
-//Factory/map
 @Injectable()
 export class NotificationProviderFactory {
   private readonly providers = new Map<ChannelType, NotificationProvider>();
 
+  //Factory/map
   constructor(
     private readonly emailProvider: EmailProvider,
     private readonly smsProvider: SmsProvider,

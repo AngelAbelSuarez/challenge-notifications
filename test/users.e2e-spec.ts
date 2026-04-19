@@ -32,7 +32,6 @@ describe('UsersController (e2e)', () => {
   let usersRepository: Repository<Users>;
 
   beforeAll(async () => {
-
     testContext = await initTestApp();
     app = testContext.app;
     usersRepository = testContext.usersRepository;

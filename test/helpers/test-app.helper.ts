@@ -45,7 +45,6 @@ export async function initTestApp(): Promise<TestAppContext> {
   };
 }
 
-
 export async function closeTestApp(context: TestAppContext): Promise<void> {
   const { app, dataSource, usersRepository } = context;
 
