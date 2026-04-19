@@ -9,7 +9,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Notifications } from '@/notifications/entities/notification.entity';
+// import { Notifications } from '@/notifications/entities/notification.entity';
 
 @Entity()
 export class Users {
@@ -55,8 +55,8 @@ export class Users {
   @Column({ type: 'enum', default: Role.USER, enum: Role })
   role: string;
 
-  @OneToMany(() => Notifications, (notification) => notification.userId)
-  notifications: Notifications[];
+  // @OneToMany(() => Notifications, (notification) => notification.userId)
+  // notifications: Notifications[];
 
   @ApiProperty({
     example: new Date(),
