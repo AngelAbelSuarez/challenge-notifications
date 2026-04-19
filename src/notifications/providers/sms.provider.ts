@@ -26,22 +26,22 @@ export class SmsProvider implements NotificationProvider {
     if (!this.validateRecipient(recipient)) {
       return {
         success: false,
-        message: 'Invalid device token',
+        message: 'Invalid phone number format',
       };
     }
 
-    const payload = this.formatContent(content);
+    const formattedContent = this.formatContent(content);
 
-    console.log(`[PUSH] Sending to: ${recipient}`);
-    console.log(`[PUSH] Payload: ${payload}`);
-    console.log(`[PUSH] Sending...`);
+    console.log(`[SMS] Sending to: ${recipient}`);
+    console.log(`[SMS] Content length: ${formattedContent.length} characters`);
+    console.log(`[SMS] Sending...`);
 
     return {
       success: true,
-      message: 'Push notification sent successfully',
+      message: 'SMS sent successfully',
       metadata: {
         recipient,
-        payload: JSON.stringify(payload),
+        templat: formattedContent,
         sentAt: new Date(),
       },
     };

@@ -11,9 +11,6 @@ export interface TestAppContext {
   usersRepository: Repository<Users>;
 }
 
-/**
- * Initialize a test application with test database configuration
- */
 export async function initTestApp(): Promise<TestAppContext> {
   // Create test module
   const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -38,7 +35,7 @@ export async function initTestApp(): Promise<TestAppContext> {
 
   // Initialize the app
   await app.init();
-  // Get repository
+
   const usersRepository = dataSource.getRepository(Users);
 
   return {
@@ -48,29 +45,16 @@ export async function initTestApp(): Promise<TestAppContext> {
   };
 }
 
-/**
- * Clean up resources used by the test app
- */
+
 export async function closeTestApp(context: TestAppContext): Promise<void> {
   const { app, dataSource, usersRepository } = context;
 
-  // Clean up test data
-  // await usersRepository.clear();
-
-  // Close connections
   await dataSource.destroy();
   await app.close();
 }
 
-/**
- * Reset the test app state between tests
- */
 export async function resetTestApp(context: TestAppContext): Promise<void> {
   const { dataSource, usersRepository } = context;
 
-  // Clear all data
-  // await usersRepository.clear();
-
-  // Reset the database schema
   await dataSource.synchronize(true);
 }

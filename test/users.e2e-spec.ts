@@ -20,8 +20,6 @@ import { RespondUserDto } from '../src/users/dto';
 import { Role } from '../src/common/enum/role.enum';
 import * as bcryptjs from 'bcryptjs';
 
-// import axios from 'axios';
-
 interface ErrorResponse {
   message: string | string[];
   error: string;
@@ -34,7 +32,7 @@ describe('UsersController (e2e)', () => {
   let usersRepository: Repository<Users>;
 
   beforeAll(async () => {
-    // Inicializar la aplicación de prueba
+
     testContext = await initTestApp();
     app = testContext.app;
     usersRepository = testContext.usersRepository;
@@ -63,7 +61,6 @@ describe('UsersController (e2e)', () => {
   });
 
   beforeEach(async () => {
-    //Restaurar spy después de cada test
     await resetTestApp(testContext);
   });
 
