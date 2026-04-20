@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { ModuleRef } from '@nestjs/core';
 import { ChannelType } from '../enums/channel-type.enum';
 import { NotificationProvider } from '../interfaces/notification-provider.interface';
 import { EmailProvider } from './email.provider';

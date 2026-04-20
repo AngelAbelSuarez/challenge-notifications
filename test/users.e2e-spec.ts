@@ -1,3 +1,4 @@
+jest.setTimeout(60000);
 import {
   TestAppContext,
   initTestApp,

@@ -10,14 +10,18 @@ import {
 import { NotificationsService } from './notifications.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
+import { SendResult } from './interfaces/notification-provider.interface';
 
 @Controller('notifications')
 export class NotificationsController {
   constructor(private readonly notificationsService: NotificationsService) {}
 
   @Post()
-  create(@Body() createNotificationDto: CreateNotificationDto) {
-    return this.notificationsService.create(createNotificationDto);
+  create(
+    @Body() createNotificationDto: CreateNotificationDto,
+    @Param('userId') userId: string,
+  ): Promise<SendResult> {
+    return this.notificationsService.create(createNotificationDto, userId);
   }
 
   @Get()

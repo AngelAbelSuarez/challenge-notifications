@@ -5,6 +5,7 @@ import { UpdateNotificationDto } from './dto/update-notification.dto';
 import { NotificationProviderFactory } from './providers/provider.factory';
 import { NotificationStatus } from './enums/notification-status.enum';
 import { Notifications } from './entities/notification.entity';
+import { SendResult } from './interfaces/notification-provider.interface';
 
 @Injectable()
 export class NotificationsService {
@@ -13,7 +14,10 @@ export class NotificationsService {
     private readonly notificationProviderFactory: NotificationProviderFactory,
   ) {}
 
-  async create(createNotificationDto: CreateNotificationDto, userId: string) {
+  async create(
+    createNotificationDto: CreateNotificationDto,
+    userId: string,
+  ): Promise<SendResult> {
     let notification: Notifications | undefined;
     try {
       notification = await this.notificationRepository.create(

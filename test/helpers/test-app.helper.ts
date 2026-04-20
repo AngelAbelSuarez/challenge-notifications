@@ -3,7 +3,7 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { Users } from '../../src/users/entities/user.entity';
 import { AppModule } from '../../src/app.module';
-import { AuthService } from '@/auth/auth.service';
+import { Notifications } from '@/notifications/entities/notification.entity';
 
 export interface TestAppContext {
   app: INestApplication;
@@ -19,7 +19,7 @@ export async function initTestApp(): Promise<TestAppContext> {
 
   // Override database configuration for tests
   const app = moduleFixture.createNestApplication();
-  // Get the DataSource before initializing the app
+
   const dataSource = moduleFixture.get<DataSource>(DataSource);
   // Drop and recreate the database schema
   await dataSource.dropDatabase();
@@ -46,14 +46,12 @@ export async function initTestApp(): Promise<TestAppContext> {
 }
 
 export async function closeTestApp(context: TestAppContext): Promise<void> {
-  const { app, dataSource, usersRepository } = context;
-
+  const { app, dataSource } = context;
   await dataSource.destroy();
   await app.close();
 }
 
 export async function resetTestApp(context: TestAppContext): Promise<void> {
-  const { dataSource, usersRepository } = context;
-
+  const { dataSource } = context;
   await dataSource.synchronize(true);
 }
