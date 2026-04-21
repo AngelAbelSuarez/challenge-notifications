@@ -62,12 +62,12 @@ export class Notifications {
   @Column({
     type: 'enum',
     enum: NotificationStatus,
-    default: NotificationStatus.PENDING,
+    default: NotificationStatus.SENT,
   })
   status: NotificationStatus;
 
   @ApiProperty({
-    example: '[EMAIL_ADDRESS]',
+    example: 'email@gmail.com',
     description: 'The recipient of the notification',
   })
   @Column({
@@ -118,8 +118,9 @@ export class Notifications {
       this.title = notification.title;
       this.content = notification.content;
       this.channel = notification.channel;
+      this.status = notification.status;
       this.recipient = notification.recipient;
-      // this.userId = notification.userId;
+      this.userId = notification.userId;
       this.createdAt = notification.createdAt;
       this.updatedAt = notification.updatedAt;
       this.deletedAt = notification.deletedAt || null;

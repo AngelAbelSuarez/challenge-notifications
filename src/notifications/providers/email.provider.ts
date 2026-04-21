@@ -15,14 +15,15 @@ export class EmailProvider implements NotificationProvider {
   }
 
   formatContent(content: string): string {
-    return `
-            <html>
-                <body>
-                    <h2>Notificación</h2>
-                    <p>${content}</p>
-                </body>
-            </html>
-        `;
+    const html = `
+      <html>
+        <body>
+          <h2>Notificación</h2>
+          <p>${content}</p>
+        </body>
+      </html>
+    `;
+    return html.replace(/\s+/g, ' ').trim();
   }
 
   async send(recipient: string, content: string): Promise<SendResult> {

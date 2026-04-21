@@ -11,7 +11,7 @@ import {
 
 export class CreateNotificationDto {
   @ApiProperty({
-    example: 'Welcome to our platform',
+    example: 'Hello world',
     description: 'The title of the notification',
   })
   @IsNotEmpty()
@@ -20,7 +20,7 @@ export class CreateNotificationDto {
   title: string;
 
   @ApiProperty({
-    example: 'Hello, welcome to our platform',
+    example: 'This is the content of the notification',
     description: 'The content of the notification',
   })
   @IsNotEmpty()
@@ -29,25 +29,16 @@ export class CreateNotificationDto {
   content: string;
 
   @ApiProperty({
-    example: 'Email',
+    example: ChannelType.EMAIL,
     description: 'The channel of the notification',
+    enum: ChannelType,
   })
   @IsNotEmpty()
-  @IsString()
   @IsEnum(ChannelType)
   channel: ChannelType;
 
   @ApiProperty({
-    example: 'Pending',
-    description: 'The status of the notification',
-  })
-  @IsNotEmpty()
-  @IsString()
-  @IsEnum(NotificationStatus)
-  status: NotificationStatus;
-
-  @ApiProperty({
-    example: '[EMAIL_ADDRESS]',
+    example: 'welcome@email.com',
     description: 'The recipient of the notification',
   })
   @IsNotEmpty()

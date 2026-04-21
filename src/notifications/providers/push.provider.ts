@@ -24,14 +24,14 @@ export class PushProvider implements NotificationProvider {
     if (!this.validateRecipient(recipient)) {
       return {
         success: false,
-        message: 'Invalid device token',
+        message: 'Invalid device token, must be 32 hex characters',
       };
     }
 
     const payload = this.formatContent(content);
 
     console.log(`[PUSH] Sending to: ${recipient}`);
-    console.log(`[PUSH] Payload: ${payload}`);
+    console.log(`[PUSH] Payload`);
     console.log(`[PUSH] Sending...`);
 
     return {
@@ -39,7 +39,7 @@ export class PushProvider implements NotificationProvider {
       message: 'Push notification sent successfully',
       metadata: {
         recipient,
-        payload: JSON.stringify(payload),
+        template: JSON.stringify(payload),
         sentAt: new Date(),
       },
     };

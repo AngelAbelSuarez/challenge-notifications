@@ -14,20 +14,43 @@ import { UpdateNotificationDto } from './dto/update-notification.dto';
 import { SendResult } from './interfaces/notification-provider.interface';
 import { AuthGuard } from '@/auth/guard/auth.guard';
 import { ActiveUser } from '@/common/decorators/active-user.decorator';
-import type { ActiveUserInterface } from '@/common/interfaces/active-user.interface'; 
+import type { ActiveUserInterface } from '@/common/interfaces/active-user.interface';
+import {
+  ApiBearerAuth,
+  ApiForbiddenResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 
+@ApiTags('Notifications')
+@ApiBearerAuth()
+@ApiUnauthorizedResponse({
+  description: 'Unauthorized Bearer Auth',
+})
 @Controller('notifications')
 @UseGuards(AuthGuard)
 export class NotificationsController {
-  constructor(private readonly notificationsService: NotificationsService) { }
+  constructor(private readonly notificationsService: NotificationsService) {}
 
   @Post()
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized Bearer Auth',
+    schema: {
+      example: {
+        message: 'Token not found',
+        error: 'Unauthorized',
+        statusCode: 401,
+      },
+    },
+  })
   create(
     @Body() createNotificationDto: CreateNotificationDto,
     @ActiveUser() activeUser: ActiveUserInterface,
   ): Promise<SendResult> {
-    console.log('activeUser.id',activeUser.id);
-    return this.notificationsService.create(createNotificationDto, activeUser.id);
+    return this.notificationsService.create(
+      createNotificationDto,
+      activeUser.id,
+    );
   }
 
   @Get()

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { NotificationsRepository } from './notifications.repository';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
@@ -20,11 +20,6 @@ export class NotificationsService {
   ): Promise<SendResult> {
     let notification: Notifications | undefined;
     try {
-      notification = await this.notificationRepository.create(
-        createNotificationDto,
-        userId,
-      );
-
       const provider = await this.notificationProviderFactory.getProvider(
         createNotificationDto.channel,
       );
@@ -34,18 +29,22 @@ export class NotificationsService {
         createNotificationDto.content,
       );
 
-      await this.notificationRepository.update(notification.id, {
-        status: NotificationStatus.SENT,
-      });
+      if (!providerSend.success) {
+        throw new BadRequestException(providerSend.message);
+      }
+
+      notification = await this.notificationRepository.create(
+        createNotificationDto,
+        userId,
+      );
 
       return providerSend;
     } catch (error) {
-      if (notification?.id) {
-        await this.notificationRepository.update(notification.id, {
-          status: NotificationStatus.FAILED,
-        });
+      if (error instanceof BadRequestException) {
+        throw error;
       }
-      throw new Error(`Error al enviar la notificación: ${error.message}`);
+
+      throw new Error(`Error inesperado: ${error.message}`);
     }
   }
 
