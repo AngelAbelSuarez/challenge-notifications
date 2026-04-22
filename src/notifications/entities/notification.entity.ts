@@ -72,7 +72,7 @@ export class Notifications {
   })
   @Column({
     type: 'varchar',
-    length: 100,
+    length: 160,
     nullable: false,
   })
   recipient: string;
