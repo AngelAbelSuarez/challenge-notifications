@@ -25,6 +25,7 @@ import {
   notificationSMSData,
 } from './mocks/notifications.mock';
 import { SendResult } from '@/notifications/interfaces/notification-provider.interface';
+import { RespondNotificationDto } from '@/notifications/dto';
 
 interface ErrorResponse {
   message: string | string[];
@@ -245,4 +246,63 @@ describe('NotificationsController (e2e)', () => {
       expect(body.error).toBe('Unauthorized');
     });
   });
+
+  describe('GET ALL /notifications', () => {
+    it('It should respond status 200 code when get all notification successfully', async () => {
+
+      await request(app.getHttpServer())
+        .post('/notifications')
+        .send(notificationEmailData)
+        .set('Authorization', `Bearer ${tokenUser}`)
+
+      const response = await request(app.getHttpServer())
+        .get('/notifications')
+        .set('Authorization', `Bearer ${tokenUser}`)
+        .expect(200);
+
+      const body = response.body as Notifications[];
+      expect(body[0]).toHaveProperty('id');
+      expect(body[0]).toHaveProperty('title');
+      expect(body[0]).toHaveProperty('content');
+      expect(body[0]).toHaveProperty('channel');
+      expect(body[0]).toHaveProperty('recipient');
+      expect(body[0]).toHaveProperty('status');
+      expect(body[0]).toHaveProperty('userId');
+      expect(body[0]).toHaveProperty('createdAt');
+      expect(body[0]).toHaveProperty('updatedAt');
+      expect(body[0]).toHaveProperty('deletedAt');
+
+    });
+
+    it('It should respond status 401 code when no token is provided', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/notifications')
+        .expect(401);
+
+      const body = response.body as ErrorResponse;
+      expect(body.message).toBe('Token not found');
+      expect(body.error).toBe('Unauthorized');
+    });
+
+  })
+
+  //   [
+  //   {
+  //     "id": "4a488157-4198-4489-9c89-859d76ccb060",
+  //     "title": "Hello world",
+  //     "content": "This is the content of the notification",
+  //     "channel": "email",
+  //     "recipient": "welcome@email.com",
+  //     "status": "sent",
+  //     "userId": "4a488157-4198-4489-9c89-859d76ccb060",
+  //     "createdDate": "2026-04-23T04:39:25.250Z",
+  //     "updatedDate": "2026-04-23T04:39:25.250Z",
+  //     "deletedAt": null
+  //   }
+  // ]
+
+
+
+
+
 });

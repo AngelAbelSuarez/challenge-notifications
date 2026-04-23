@@ -37,7 +37,7 @@ import { Notifications } from './entities/notification.entity';
 @Controller('notifications')
 @UseGuards(AuthGuard)
 export class NotificationsController {
-  constructor(private readonly notificationsService: NotificationsService) {}
+  constructor(private readonly notificationsService: NotificationsService) { }
 
   @Post()
   @ApiOperation({
@@ -114,6 +114,34 @@ export class NotificationsController {
   }
 
   @Get()
+  @ApiOperation({
+    summary: 'Get all notifications of user',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Return all notifications.',
+    type: [RespondNotificationDto],
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized Bearer Auth',
+    schema: {
+      example: {
+        message: 'Token not found',
+        error: 'Unauthorized',
+        statusCode: 401,
+      },
+    },
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Internal server error',
+    schema: {
+      example: {
+        message: 'Internal server error',
+        error: 'Internal Server Error',
+        statusCode: 500,
+      },
+    },
+  })
   findAll(
     @ActiveUser() activeUser: ActiveUserInterface,
   ): Promise<Notifications[]> {
