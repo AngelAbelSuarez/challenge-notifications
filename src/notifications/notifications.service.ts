@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { NotificationsRepository } from './notifications.repository';
 import { NotificationProviderFactory } from './providers/provider.factory';
 import { SendResult } from './interfaces/notification-provider.interface';
@@ -14,7 +14,7 @@ export class NotificationsService {
   constructor(
     private readonly notificationRepository: NotificationsRepository,
     private readonly notificationProviderFactory: NotificationProviderFactory,
-  ) {}
+  ) { }
 
   async create(
     createNotificationDto: CreateNotificationDto,
@@ -52,19 +52,25 @@ export class NotificationsService {
     return notifications;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} notification`;
+  async findOne(id: string, userId: string): Promise<Notifications> {
+    const notification = await this.notificationRepository.findOne(id);
+    if (!notification) {
+      throw new NotFoundException('Notification not found');
+    }
+
+    if(notification.userId !== userId){
+      throw new BadRequestException('You are not authorized to access this notification');
+    }
+  
+    return notification;
   }
 
-  // async updateNotifications (updateNotificationDto: UpdateNotificationDto, userId: string ) {
 
-  // }
-
-  update(id: number, updateNotificationDto: UpdateNotificationDto) {
-    return `This action updates a #${id} notification`;
+  async update(id: string, updateNotificationDto: UpdateNotificationDto) {
+    return await this.notificationRepository.update(id, updateNotificationDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} notification`;
+  async remove(id: string) {
+    return await this.notificationRepository.delete(id);
   }
 }

@@ -34,6 +34,10 @@ export class NotificationsRepository {
     return await this.notificationRepository.findOne({ where: { id, userId } });
   }
 
+  async findOne(id: string): Promise<Notifications | null> {
+    return await this.notificationRepository.findOneBy({ id });
+  }
+
   async update(
     id: string,
     updateNotificationDto: UpdateNotificationDto,

@@ -21,7 +21,9 @@ import {
   ApiBody,
   ApiForbiddenResponse,
   ApiInternalServerErrorResponse,
+  ApiNotFoundResponse,
   ApiOperation,
+  ApiParam,
   ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
@@ -149,8 +151,60 @@ export class NotificationsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.notificationsService.findOne(+id);
+  @ApiOperation({ summary: 'Get notification by id' })
+  @ApiParam({ name: 'id', description: 'Notification id' })
+  @ApiResponse({
+    status: 200,
+    description: 'Return the notification by id of user.',
+    type: [Notifications],
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad request',
+    schema: {
+      example: {
+        message: [
+          'You are not authorized to access this notification'
+        ],
+        error: 'Bad Request',
+        statusCode: 400,
+      },
+    },
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized Bearer Auth',
+    schema: {
+      example: {
+        message: 'Token not found',
+        error: 'Unauthorized',
+        statusCode: 401,
+      },
+    },
+  })
+  @ApiNotFoundResponse({
+    description: 'Not found',
+    schema: {
+      example: {
+        message: 'Notification not found',
+        error: 'Not Found',
+        statusCode: 404,
+      },
+    },
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Internal server error',
+    schema: {
+      example: {
+        message: 'Internal server error',
+        error: 'Internal Server Error',
+        statusCode: 500,
+      },
+    },
+  })
+  findOne(
+    @Param('id') id: string,
+    @ActiveUser() activeUser: ActiveUserInterface,
+  ): Promise<Notifications> {
+    return this.notificationsService.findOne(id, activeUser.id);
   }
 
   @Patch(':id')
@@ -158,11 +212,11 @@ export class NotificationsController {
     @Param('id') id: string,
     @Body() updateNotificationDto: UpdateNotificationDto,
   ) {
-    return this.notificationsService.update(+id, updateNotificationDto);
+    return this.notificationsService.update(id, updateNotificationDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.notificationsService.remove(+id);
+    return this.notificationsService.remove(id);
   }
 }

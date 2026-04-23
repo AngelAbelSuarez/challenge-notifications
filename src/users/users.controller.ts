@@ -34,7 +34,7 @@ import { Role } from '@/common/enum/role.enum';
 @Controller('users')
 @Auth([Role.ADMIN])
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
   @Post()
   @ApiOperation({ summary: 'Create user' })
@@ -182,6 +182,16 @@ export class UsersController {
         message: 'User with id 17a6b856-03d8-44a5-a87f-cf76fcc67f45 not found',
         error: 'Not Found',
         statusCode: 404,
+      },
+    },
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Internal server error',
+    schema: {
+      example: {
+        message: 'Internal server error',
+        error: 'Internal Server Error',
+        statusCode: 500,
       },
     },
   })
