@@ -26,6 +26,8 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { RespondNotificationDto } from './dto';
+import { Notifications } from './entities/notification.entity';
 
 @ApiTags('Notifications')
 @ApiBearerAuth()
@@ -112,8 +114,10 @@ export class NotificationsController {
   }
 
   @Get()
-  findAll() {
-    return this.notificationsService.findAll();
+  findAll(
+    @ActiveUser() activeUser: ActiveUserInterface,
+  ): Promise<Notifications[]> {
+    return this.notificationsService.findAll(activeUser.id);
   }
 
   @Get(':id')

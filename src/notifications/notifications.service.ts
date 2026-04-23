@@ -1,9 +1,13 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { NotificationsRepository } from './notifications.repository';
-import { CreateNotificationDto } from './dto/create-notification.dto';
-import { UpdateNotificationDto } from './dto/update-notification.dto';
 import { NotificationProviderFactory } from './providers/provider.factory';
 import { SendResult } from './interfaces/notification-provider.interface';
+import {
+  CreateNotificationDto,
+  RespondNotificationDto,
+  UpdateNotificationDto,
+} from './dto';
+import { Notifications } from './entities/notification.entity';
 
 @Injectable()
 export class NotificationsService {
@@ -42,13 +46,10 @@ export class NotificationsService {
     }
   }
 
-  // async findAll(userId: string): Promise<Notifications[]> {
-  //   const notifications = await this.notificationRepository.findAllByUser(userId);
-  //   return notifications;
-  // }
-
-  findAll() {
-    return `This action returns all notifications`;
+  async findAll(userId: string): Promise<Notifications[]> {
+    const notifications =
+      await this.notificationRepository.findAllByUser(userId);
+    return notifications;
   }
 
   findOne(id: number) {

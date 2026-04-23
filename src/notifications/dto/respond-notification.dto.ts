@@ -15,6 +15,7 @@ export class RespondNotificationDto {
     example: '4a488157-4198-4489-9c89-859d76ccb060',
     description: 'The unique identifier of the notification',
   })
+  @IsUUID()
   id: string;
 
   @ApiProperty({
@@ -62,6 +63,7 @@ export class RespondNotificationDto {
     example: '4a488157-4198-4489-9c89-859d76ccb060',
     description: 'The unique identifier of the user',
   })
+  @IsUUID()
   userId: string;
 
   @ApiProperty({
@@ -92,7 +94,7 @@ export class RespondNotificationDto {
       this.status = notification.status;
       this.createdDate = notification.createdDate;
       this.updatedDate = notification.updatedDate;
-      this.deletedAt = notification.deletedAt;
+      this.deletedAt = notification.deletedAt || null;
     }
   }
 }
