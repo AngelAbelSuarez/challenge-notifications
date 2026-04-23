@@ -28,7 +28,7 @@ export class Notifications {
   })
   @Column({
     type: 'varchar',
-    length: 255,
+    length: 20,
     nullable: false,
   })
   title: string;
@@ -39,13 +39,13 @@ export class Notifications {
   })
   @Column({
     type: 'varchar',
-    length: 255,
+    length: 200,
     nullable: false,
   })
   content: string;
 
   @ApiProperty({
-    example: 'Email',
+    example: 'email',
     description: 'The channel of the notification',
   })
   @Column({
@@ -72,7 +72,7 @@ export class Notifications {
   })
   @Column({
     type: 'varchar',
-    length: 160,
+    length: 200,
     nullable: false,
   })
   recipient: string;

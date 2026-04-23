@@ -10,7 +10,13 @@ import {
   MinLength,
 } from 'class-validator';
 
-export class CreateNotificationDto {
+export class RespondNotificationDto {
+  @ApiProperty({
+    example: '4a488157-4198-4489-9c89-859d76ccb060',
+    description: 'The unique identifier of the notification',
+  })
+  id: string;
+
   @ApiProperty({
     example: 'Hello world',
     description: 'The title of the notification',
@@ -46,12 +52,47 @@ export class CreateNotificationDto {
   @IsString()
   recipient: string;
 
-  constructor(notification?: CreateNotificationDto) {
+  @ApiProperty({
+    example: NotificationStatus.SENT,
+    description: 'The status of the notification',
+  })
+  status: NotificationStatus;
+
+  @ApiProperty({
+    example: '4a488157-4198-4489-9c89-859d76ccb060',
+    description: 'The unique identifier of the user',
+  })
+  userId: string;
+
+  @ApiProperty({
+    example: new Date(),
+    description: 'The date when the user was created',
+  })
+  createdDate: Date;
+
+  @ApiProperty({
+    example: new Date(),
+    description: 'The date when the user was updated',
+  })
+  updatedDate: Date;
+
+  @ApiProperty({
+    example: null,
+    description: 'The date when the user was deleted',
+  })
+  deletedAt?: Date | null;
+
+  constructor(notification?: RespondNotificationDto) {
     if (notification) {
+      this.id = notification.id;
       this.title = notification.title;
       this.content = notification.content;
       this.channel = notification.channel;
       this.recipient = notification.recipient;
+      this.status = notification.status;
+      this.createdDate = notification.createdDate;
+      this.updatedDate = notification.updatedDate;
+      this.deletedAt = notification.deletedAt;
     }
   }
 }

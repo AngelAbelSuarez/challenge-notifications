@@ -18,8 +18,11 @@ import type { ActiveUserInterface } from '@/common/interfaces/active-user.interf
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
+  ApiBody,
   ApiForbiddenResponse,
   ApiInternalServerErrorResponse,
+  ApiOperation,
+  ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -32,30 +35,51 @@ import {
 @Controller('notifications')
 @UseGuards(AuthGuard)
 export class NotificationsController {
-  constructor(private readonly notificationsService: NotificationsService) { }
+  constructor(private readonly notificationsService: NotificationsService) {}
 
   @Post()
+  @ApiOperation({
+    summary: 'Create a new notification',
+  })
+  @ApiBody({
+    type: CreateNotificationDto,
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Notification created successfully',
+    schema: {
+      example: {
+        success: true,
+        message: 'Notification created successfully',
+        metadata: {
+          recipient: 'welcome@email.com',
+          template:
+            '<html> <body> <h2>Notificación</h2> <p>This is the content of the notification</p> </body> </html>',
+          sentAt: '2026-04-23T01:50:11.654Z',
+        },
+      },
+    },
+  })
   @ApiBadRequestResponse({
     description: 'Bad request',
     schema: {
       example: {
         message: [
-          'title must be shorter than or equal to 255 characters',
+          'title must be shorter than or equal to 20 characters',
           'title must be a string',
           'title should not be empty',
-          'content must be shorter than or equal to 255 characters',
+          'content must be longer than or equal to 20 characters',
           'content must be a string',
           'content should not be empty',
           'channel must be one of the following values: email, sms, push',
           'channel should not be empty',
-          'recipient must be shorter than or equal to 100 characters',
           'recipient must be a string',
-          'recipient should not be empty'
+          'recipient should not be empty',
         ],
         error: 'Bad Request',
-        statusCode: 400
-      }
-    }
+        statusCode: 400,
+      },
+    },
   })
   @ApiUnauthorizedResponse({
     description: 'Unauthorized Bearer Auth',

@@ -36,9 +36,9 @@ export class EmailProvider implements NotificationProvider {
 
     const formattedContent = this.formatContent(content);
 
-    console.log(`[EMAIL] Sending to: ${recipient}`);
-    console.log(`[EMAIL] Template generated`);
-    console.log(`[EMAIL] Sending...`);
+    // console.log(`[EMAIL] Sending to: ${recipient}`);
+    // console.log(`[EMAIL] Template generated`);
+    // console.log(`[EMAIL] Sending...`);
 
     return {
       success: true,

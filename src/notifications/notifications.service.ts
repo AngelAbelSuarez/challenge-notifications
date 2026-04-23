@@ -3,8 +3,6 @@ import { NotificationsRepository } from './notifications.repository';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
 import { NotificationProviderFactory } from './providers/provider.factory';
-import { NotificationStatus } from './enums/notification-status.enum';
-import { Notifications } from './entities/notification.entity';
 import { SendResult } from './interfaces/notification-provider.interface';
 
 @Injectable()
@@ -18,7 +16,6 @@ export class NotificationsService {
     createNotificationDto: CreateNotificationDto,
     userId: string,
   ): Promise<SendResult> {
-    let notification: Notifications | undefined;
     try {
       const provider = await this.notificationProviderFactory.getProvider(
         createNotificationDto.channel,
@@ -33,10 +30,7 @@ export class NotificationsService {
         throw new BadRequestException(providerSend.message);
       }
 
-      notification = await this.notificationRepository.create(
-        createNotificationDto,
-        userId,
-      );
+      await this.notificationRepository.create(createNotificationDto, userId);
 
       return providerSend;
     } catch (error) {
@@ -48,6 +42,11 @@ export class NotificationsService {
     }
   }
 
+  // async findAll(userId: string): Promise<Notifications[]> {
+  //   const notifications = await this.notificationRepository.findAllByUser(userId);
+  //   return notifications;
+  // }
+
   findAll() {
     return `This action returns all notifications`;
   }
@@ -55,6 +54,10 @@ export class NotificationsService {
   findOne(id: number) {
     return `This action returns a #${id} notification`;
   }
+
+  // async updateNotifications (updateNotificationDto: UpdateNotificationDto, userId: string ) {
+
+  // }
 
   update(id: number, updateNotificationDto: UpdateNotificationDto) {
     return `This action updates a #${id} notification`;

@@ -30,9 +30,9 @@ export class PushProvider implements NotificationProvider {
 
     const payload = this.formatContent(content);
 
-    console.log(`[PUSH] Sending to: ${recipient}`);
-    console.log(`[PUSH] Payload`);
-    console.log(`[PUSH] Sending...`);
+    // console.log(`[PUSH] Sending to: ${recipient}`);
+    // console.log(`[PUSH] Payload`);
+    // console.log(`[PUSH] Sending...`);
 
     return {
       success: true,

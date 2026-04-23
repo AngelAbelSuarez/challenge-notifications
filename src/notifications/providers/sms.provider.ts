@@ -32,9 +32,9 @@ export class SmsProvider implements NotificationProvider {
 
     const formattedContent = this.formatContent(content);
 
-    console.log(`[SMS] Sending to: ${recipient}`);
-    console.log(`[SMS] Content length: ${formattedContent.length} characters`);
-    console.log(`[SMS] Sending...`);
+    // console.log(`[SMS] Sending to: ${recipient}`);
+    // console.log(`[SMS] Content length: ${formattedContent.length} characters`);
+    // console.log(`[SMS] Sending...`);
 
     return {
       success: true,

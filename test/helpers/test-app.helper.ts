@@ -9,6 +9,7 @@ export interface TestAppContext {
   app: INestApplication;
   dataSource: DataSource;
   usersRepository: Repository<Users>;
+  notificationsRepository: Repository<Notifications>;
 }
 
 export async function initTestApp(): Promise<TestAppContext> {
@@ -37,11 +38,13 @@ export async function initTestApp(): Promise<TestAppContext> {
   await app.init();
 
   const usersRepository = dataSource.getRepository(Users);
+  const notificationsRepository = dataSource.getRepository(Notifications);
 
   return {
     app,
     dataSource,
     usersRepository,
+    notificationsRepository,
   };
 }
 

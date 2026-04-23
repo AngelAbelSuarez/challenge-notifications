@@ -4,6 +4,12 @@ export const userData = {
   password: 'newpassword123',
 };
 
+export let tokenUser: string = '';
+
+export const loginUser = async (token: string) => {
+  tokenUser = token;
+};
+
 export const userData2 = {
   name: 'newuser2',
   email: 'new2@example.com',
