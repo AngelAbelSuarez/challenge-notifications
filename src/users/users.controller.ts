@@ -34,7 +34,7 @@ import { Role } from '@/common/enum/role.enum';
 @Controller('users')
 @Auth([Role.ADMIN])
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
+  constructor(private readonly usersService: UsersService) {}
 
   @Post()
   @ApiOperation({ summary: 'Create user' })

@@ -39,7 +39,7 @@ import { Notifications } from './entities/notification.entity';
 @Controller('notifications')
 @UseGuards(AuthGuard)
 export class NotificationsController {
-  constructor(private readonly notificationsService: NotificationsService) { }
+  constructor(private readonly notificationsService: NotificationsService) {}
 
   @Post()
   @ApiOperation({
@@ -162,9 +162,7 @@ export class NotificationsController {
     description: 'Bad request',
     schema: {
       example: {
-        message: [
-          'You are not authorized to access this notification'
-        ],
+        message: ['You are not authorized to access this notification'],
         error: 'Bad Request',
         statusCode: 400,
       },

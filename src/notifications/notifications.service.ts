@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { NotificationsRepository } from './notifications.repository';
 import { NotificationProviderFactory } from './providers/provider.factory';
 import { SendResult } from './interfaces/notification-provider.interface';
@@ -14,7 +18,7 @@ export class NotificationsService {
   constructor(
     private readonly notificationRepository: NotificationsRepository,
     private readonly notificationProviderFactory: NotificationProviderFactory,
-  ) { }
+  ) {}
 
   async create(
     createNotificationDto: CreateNotificationDto,
@@ -58,13 +62,14 @@ export class NotificationsService {
       throw new NotFoundException('Notification not found');
     }
 
-    if(notification.userId !== userId){
-      throw new BadRequestException('You are not authorized to access this notification');
+    if (notification.userId !== userId) {
+      throw new BadRequestException(
+        'You are not authorized to access this notification',
+      );
     }
-  
+
     return notification;
   }
-
 
   async update(id: string, updateNotificationDto: UpdateNotificationDto) {
     return await this.notificationRepository.update(id, updateNotificationDto);

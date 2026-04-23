@@ -249,11 +249,10 @@ describe('NotificationsController (e2e)', () => {
 
   describe('GET ALL /notifications', () => {
     it('It should respond status 200 code when get all notification successfully', async () => {
-
       await request(app.getHttpServer())
         .post('/notifications')
         .send(notificationEmailData)
-        .set('Authorization', `Bearer ${tokenUser}`)
+        .set('Authorization', `Bearer ${tokenUser}`);
 
       const response = await request(app.getHttpServer())
         .get('/notifications')
@@ -271,7 +270,6 @@ describe('NotificationsController (e2e)', () => {
       expect(body[0]).toHaveProperty('createdAt');
       expect(body[0]).toHaveProperty('updatedAt');
       expect(body[0]).toHaveProperty('deletedAt');
-
     });
 
     it('It should respond status 401 code when no token is provided', async () => {
@@ -283,8 +281,7 @@ describe('NotificationsController (e2e)', () => {
       expect(body.message).toBe('Token not found');
       expect(body.error).toBe('Unauthorized');
     });
-
-  })
+  });
 
   //   [
   //   {
@@ -300,9 +297,4 @@ describe('NotificationsController (e2e)', () => {
   //     "deletedAt": null
   //   }
   // ]
-
-
-
-
-
 });
