@@ -16,6 +16,12 @@ export const userData2 = {
   password: 'newpassword123',
 };
 
+export let tokenUser2: string = '';
+
+export const loginUser2 = async (token: string) => {
+  tokenUser2 = token;
+};
+
 export const idUserNotFound = '17a6b856-03d8-44a5-a87f-cf76fcc67f45';
 
 export const adminData = {

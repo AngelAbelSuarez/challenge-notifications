@@ -18,3 +18,5 @@ export const notificationPushData = {
   channel: 'push',
   recipient: '1234567890abcdef1234567890abcdef',
 };
+
+export const notificationNotFound = 'bc43c059-d497-4296-8310-cff0483d38ba';

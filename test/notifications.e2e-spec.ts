@@ -15,12 +15,15 @@ import {
   userData2,
   tokenUser,
   loginUser,
+  loginUser2,
+  tokenUser2,
 } from './mocks/users.mock';
 import { RespondUserDto } from '../src/users/dto';
 import * as bcryptjs from 'bcryptjs';
 import { Notifications } from '@/notifications/entities/notification.entity';
 import {
   notificationEmailData,
+  notificationNotFound,
   notificationPushData,
   notificationSMSData,
 } from './mocks/notifications.mock';
@@ -68,6 +71,23 @@ describe('NotificationsController (e2e)', () => {
       });
 
     await loginUser(loginResponse.body.token);
+
+    const hashedPassword2 = await bcryptjs.hash(userData2.password, 10);
+    const userCreated2 = usersRepository.create({
+      ...userData2,
+      password: hashedPassword2,
+    });
+
+    await usersRepository.save(userCreated2);
+
+    const loginResponse2 = await request(app.getHttpServer())
+      .post('/auth/login')
+      .send({
+        email: userData2.email,
+        password: userData2.password,
+      });
+
+    await loginUser2(loginResponse2.body.token);
   });
 
   describe('POST /notifications', () => {
@@ -248,7 +268,7 @@ describe('NotificationsController (e2e)', () => {
   });
 
   describe('GET ALL /notifications', () => {
-    it('It should respond status 200 code when get all notification successfully', async () => {
+    it('It should respond status 200 code when get all notifications successfully', async () => {
       await request(app.getHttpServer())
         .post('/notifications')
         .send(notificationEmailData)
@@ -283,18 +303,89 @@ describe('NotificationsController (e2e)', () => {
     });
   });
 
-  //   [
-  //   {
-  //     "id": "4a488157-4198-4489-9c89-859d76ccb060",
-  //     "title": "Hello world",
-  //     "content": "This is the content of the notification",
-  //     "channel": "email",
-  //     "recipient": "welcome@email.com",
-  //     "status": "sent",
-  //     "userId": "4a488157-4198-4489-9c89-859d76ccb060",
-  //     "createdDate": "2026-04-23T04:39:25.250Z",
-  //     "updatedDate": "2026-04-23T04:39:25.250Z",
-  //     "deletedAt": null
-  //   }
-  // ]
+  describe('GET ONE /notifications', () => {
+    it('It should respond status 200 code when get by id notification successfully', async () => {
+      await request(app.getHttpServer())
+        .post('/notifications')
+        .send(notificationEmailData)
+        .set('Authorization', `Bearer ${tokenUser}`);
+
+      const getAllNotifications = await request(app.getHttpServer())
+        .get('/notifications')
+        .set('Authorization', `Bearer ${tokenUser}`);
+
+      const id = getAllNotifications.body[0].id;
+
+      const response = await request(app.getHttpServer())
+        .get(`/notifications/${id}`)
+        .set('Authorization', `Bearer ${tokenUser}`)
+        .expect(200);
+
+      const body = response.body as Notifications;
+      expect(body).toHaveProperty('id');
+      expect(body).toHaveProperty('title');
+      expect(body).toHaveProperty('content');
+      expect(body).toHaveProperty('channel');
+      expect(body).toHaveProperty('recipient');
+      expect(body).toHaveProperty('status');
+      expect(body).toHaveProperty('userId');
+      expect(body).toHaveProperty('createdAt');
+      expect(body).toHaveProperty('updatedAt');
+      expect(body).toHaveProperty('deletedAt');
+    });
+
+    it('It should respond status 400 code when the id is not valid', async () => {
+      const response = await request(app.getHttpServer())
+        .get(`/notifications/123`)
+        .set('Authorization', `Bearer ${tokenUser}`)
+        .expect(400);
+
+      const body = response.body as ErrorResponse;
+      expect(body.message).toBe('Invalid id format');
+      expect(body.error).toBe('Bad Request');
+    });
+
+    it('It should respond status 401 code when no token is provided', async () => {
+      const response = await request(app.getHttpServer())
+        .get(`/notifications/${notificationNotFound}`)
+        .expect(401);
+
+      const body = response.body as ErrorResponse;
+      expect(body.message).toBe('Token not found');
+      expect(body.error).toBe('Unauthorized');
+    });
+
+    it('It should respond status 404 code when the notification is not found', async () => {
+      const response = await request(app.getHttpServer())
+        .get(`/notifications/${notificationNotFound}`)
+        .set('Authorization', `Bearer ${tokenUser}`)
+        .expect(404);
+
+      const body = response.body as ErrorResponse;
+      expect(body.message).toBe('Notification not found');
+      expect(body.error).toBe('Not Found');
+    });
+
+    it('It should respond status 404 code when the notification is not found', async () => {
+      await request(app.getHttpServer())
+        .post('/notifications')
+        .send(notificationEmailData)
+        .set('Authorization', `Bearer ${tokenUser}`);
+
+      const getAllNotifications = await request(app.getHttpServer())
+        .get('/notifications')
+        .set('Authorization', `Bearer ${tokenUser}`);
+
+      const id = getAllNotifications.body[0].id;
+
+      const response = await request(app.getHttpServer())
+        .get(`/notifications/${id}`)
+        .set('Authorization', `Bearer ${tokenUser2}`)
+        .expect(404);
+
+      const body = response.body as ErrorResponse;
+      expect(body.message).toBe('Notification not found');
+      expect(body.error).toBe('Not Found');
+    });
+  });
 });

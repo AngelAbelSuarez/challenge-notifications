@@ -106,7 +106,7 @@ export class Notifications {
   updatedAt: Date;
 
   @ApiProperty({
-    example: new Date(),
+    example: null,
     description: 'The date when the notification was deleted',
   })
   @DeleteDateColumn()

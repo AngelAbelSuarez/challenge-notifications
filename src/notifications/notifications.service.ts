@@ -12,6 +12,7 @@ import {
   UpdateNotificationDto,
 } from './dto';
 import { Notifications } from './entities/notification.entity';
+import { isEmail, isUUID } from 'class-validator';
 
 @Injectable()
 export class NotificationsService {
@@ -57,15 +58,18 @@ export class NotificationsService {
   }
 
   async findOne(id: string, userId: string): Promise<Notifications> {
+    if (!isUUID(id)) {
+      throw new BadRequestException('Invalid id format');
+    }
+
     const notification = await this.notificationRepository.findOne(id);
+
     if (!notification) {
       throw new NotFoundException('Notification not found');
     }
 
     if (notification.userId !== userId) {
-      throw new BadRequestException(
-        'You are not authorized to access this notification',
-      );
+      throw new NotFoundException('Notification not found');
     }
 
     return notification;
