@@ -20,3 +20,10 @@ export const notificationPushData = {
 };
 
 export const notificationNotFound = 'bc43c059-d497-4296-8310-cff0483d38ba';
+
+export const updateNotificationData = {
+  title: 'Hi! world',
+  content: 'This is the content of the notification 2',
+  channel: 'email',
+  recipient: 'welcome@email.com',
+};

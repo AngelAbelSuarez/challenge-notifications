@@ -1,11 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ChannelType } from '../enums/channel-type.enum';
-import { NotificationStatus } from '../enums/notification-status.enum';
 import {
   IsEnum,
   IsNotEmpty,
   IsString,
-  IsUUID,
   MaxLength,
   MinLength,
 } from 'class-validator';

@@ -206,11 +206,44 @@ export class NotificationsController {
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: 'Update notification' })
+  @ApiParam({ name: 'id', description: 'Notification id' })
+  @ApiBody({ type: UpdateNotificationDto })
+  @ApiResponse({
+    status: 200,
+    description: 'The notification has been successfully updated.',
+    type: Notifications,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized Bearer Auth',
+    schema: {
+      example: {
+        message: 'Token not found',
+        error: 'Unauthorized',
+        statusCode: 401,
+      },
+    },
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Internal server error',
+    schema: {
+      example: {
+        message: 'Internal server error',
+        error: 'Internal Server Error',
+        statusCode: 500,
+      },
+    },
+  })
   update(
     @Param('id') id: string,
+    @ActiveUser() activeUser: ActiveUserInterface,
     @Body() updateNotificationDto: UpdateNotificationDto,
-  ) {
-    return this.notificationsService.update(id, updateNotificationDto);
+  ): Promise<Notifications> {
+    return this.notificationsService.update(
+      id,
+      updateNotificationDto,
+      activeUser.id,
+    );
   }
 
   @Delete(':id')
