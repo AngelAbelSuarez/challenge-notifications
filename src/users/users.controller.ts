@@ -322,6 +322,16 @@ export class UsersController {
       },
     },
   })
+  @ApiInternalServerErrorResponse({
+    description: 'Internal server error',
+    schema: {
+      example: {
+        message: 'Internal server error',
+        error: 'Internal Server Error',
+        statusCode: 500,
+      },
+    },
+  })
   async remove(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<{ message: string; id: string }> {

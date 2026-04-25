@@ -247,7 +247,54 @@ export class NotificationsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.notificationsService.remove(id);
+  @ApiOperation({ summary: 'Delete user' })
+  @ApiParam({ name: 'id', description: 'User id' })
+  @ApiResponse({
+    status: 200,
+    description: 'Notification successfully deleted',
+    schema: {
+      example: {
+        message: 'Notification deleted successfully',
+        id: '17a6b856-03d8-44a5-a87f-cf76fcc67f45',
+      },
+    },
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized Bearer Auth',
+    schema: {
+      example: {
+        message: 'Token not found',
+        error: 'Unauthorized',
+        statusCode: 401,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Notification not found.',
+    schema: {
+      example: {
+        message:
+          'Notification with id 17a6b856-03d8-44a5-a87f-cf76fcc67f45 not found',
+        error: 'Not Found',
+        statusCode: 404,
+      },
+    },
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Internal server error',
+    schema: {
+      example: {
+        message: 'Internal server error',
+        error: 'Internal Server Error',
+        statusCode: 500,
+      },
+    },
+  })
+  remove(
+    @Param('id') id: string,
+    @ActiveUser() activeUser: ActiveUserInterface,
+  ) {
+    return this.notificationsService.remove(id, activeUser.id);
   }
 }

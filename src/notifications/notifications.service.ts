@@ -48,9 +48,13 @@ export class NotificationsService {
   }
 
   async findAll(userId: string): Promise<Notifications[]> {
-    const notifications =
-      await this.notificationRepository.findAllByUser(userId);
-    return notifications;
+    try {
+      const notifications =
+        await this.notificationRepository.findAllByUser(userId);
+      return notifications;
+    } catch (error) {
+      throw new Error(`Error inesperado: ${error.message}`);
+    }
   }
 
   async findOne(id: string, userId: string): Promise<Notifications> {
@@ -115,7 +119,29 @@ export class NotificationsService {
     return updatedNotification;
   }
 
-  async remove(id: string) {
-    return await this.notificationRepository.delete(id);
+  async remove(
+    id: string,
+    userId: string,
+  ): Promise<{ message: string; id: string }> {
+    if (!isUUID(id)) {
+      throw new BadRequestException('Invalid id format');
+    }
+
+    const notification = await this.notificationRepository.findOne(id);
+
+    if (!notification) {
+      throw new NotFoundException('Notification not found');
+    }
+
+    if (notification.userId !== userId) {
+      throw new NotFoundException('Notification not found');
+    }
+
+    await this.notificationRepository.delete(id);
+
+    return {
+      message: 'Notification deleted successfully',
+      id,
+    };
   }
 }
