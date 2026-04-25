@@ -91,7 +91,7 @@ export class NotificationsService {
     }
 
     if (updateNotificationDto.channel !== notification.channel) {
-      throw new BadRequestException('Chanpnpmnel cannot be changed');
+      throw new BadRequestException('Channel cannot be changed');
     }
 
     const provider = await this.notificationProviderFactory.getProvider(

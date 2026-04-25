@@ -6,7 +6,7 @@ export const userData = {
 
 export let tokenUser: string = '';
 
-export const loginUser = async (token: string) => {
+export const loginUser = async (token: string): Promise<void> => {
   tokenUser = token;
 };
 
@@ -18,7 +18,7 @@ export const userData2 = {
 
 export let tokenUser2: string = '';
 
-export const loginUser2 = async (token: string) => {
+export const loginUser2 = async (token: string): Promise<void> => {
   tokenUser2 = token;
 };
 
@@ -32,6 +32,6 @@ export const adminData = {
 
 export let tokenAdmin: string = '';
 
-export const loginAdmin = async (token: string) => {
+export const loginAdmin = async (token: string): Promise<void> => {
   tokenAdmin = token;
 };
