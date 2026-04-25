@@ -1,4 +1,4 @@
-# Backend Challenge
+# Backend Notification Service
 
 ## Description
 
