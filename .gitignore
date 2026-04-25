@@ -4,8 +4,8 @@
 /node_modules
 /build
 /postgres
-/postgres_data
-/postgres_test_data
+/postgres_data_test
+/postgres_data_main
 /postgres_test
 /postgres_main
 /circleci

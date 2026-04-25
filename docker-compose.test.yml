@@ -23,7 +23,6 @@ services:
       - POSTGRES_DB_PASSWORD=postgres
       - POSTGRES_DB_NAME=notifications_test
       - POSTGRES_DB_SYNC=true
-      - DRAGONBALL_API_URL='https://dragonball-api.com/api/characters'
     restart: "no"
 
   db:
@@ -35,8 +34,8 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: notifications_test
     volumes:
-      - ./postgres_test_data:/var/lib/postgresql/data 
+      - ./postgres_data_test:/var/lib/postgresql/data 
     restart: "no"
 
 volumes:
-  postgres_test_data:
+  postgres_data_test:
